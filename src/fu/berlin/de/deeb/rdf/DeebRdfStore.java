@@ -14,21 +14,22 @@ public interface DeebRdfStore {
 	
 	/**
 	 * Laedt ein im USB-Speicher gespeicherten Store ein.
-	 * @param context
-	 * 				App-Context, um auf den Speicher zugreifen zu koennen
 	 * @return
 	 * 				false, falls der Store nicht geladen werden konnte, ein leerer Store wird dann erstellt, true andernfalls
 	 */
-	public boolean loadStore(Context context);
+	public boolean loadStore();
 	
 	/**
 	 * Speichert einen Store auf dem USB-Speicher.
-	 * @param context
-	 * 				App-Context, um auf den Speicher zugreifen zu koennen
 	 * @return
 	 * 				false, falls der Store nicht gespeichert werden konnte, true andernfalls
 	 */				
-	public boolean saveStore(Context context);
+	public boolean saveStore();
+	
+	/**
+	 * Loescht den gesamten Store und erstellt einen neuen, leeren Store.
+	 */
+	public void cleanStore();
 	
 	/**
 	 * Fuegt eine neue Ressource dem Tripelstore hinzu. Eine {@link http://jena.apache.org/documentation/javadoc/jena/com/hp/hpl/jena/rdf/model/Resource.html Ressource} 
@@ -41,7 +42,8 @@ public interface DeebRdfStore {
 	
 	/**
 	 * Fuehrt eine SPARQL-Query aus und gibt das Ergebnis als eine Liste von {@link http://jena.apache.org/documentation/javadoc/jena/com/hp/hpl/jena/rdf/model/Statement.html Statements} zurueck.
-	 * Diese Liste ist nie null, kann aber leer sein, wenn kein Ergebnis gefunden wurde.
+	 * Diese Liste ist nie null, kann aber leer sein, wenn kein Ergebnis gefunden wurde. Es duerfen waehrend Ausfuehrung der Query keine Veraenderungen
+	 * an den urspruenglichen Daten stattfinden!
 	 * @param queryString
 	 * 				Die auszufuehrende Query. Dabei sollten Variablen nicht direkt eingebunden werden,
 	 * 				sondern mittels Fragezeichen als Platzhalter versehen werden. Die Variablen

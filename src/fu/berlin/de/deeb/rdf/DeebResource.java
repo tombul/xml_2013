@@ -2,6 +2,7 @@ package fu.berlin.de.deeb.rdf;
 
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
@@ -20,6 +21,11 @@ import com.hp.hpl.jena.rdf.model.Statement;
 public abstract class DeebResource {
 
 	private Resource resource;
+	private String identifier;
+	
+	public DeebResource(String identifier) {
+		this.identifier = identifier;
+	}
 
 	/**
 	 * Liefert die {@link http
@@ -45,6 +51,14 @@ public abstract class DeebResource {
 		this.resource = resource;
 	}
 	
+	public String getIdentifier() {
+		return identifier;
+	}
+	
+	protected void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+	
 	/**
 	 * Liefert alle Statements ueber diese Resource.
 	 * @return
@@ -65,6 +79,20 @@ public abstract class DeebResource {
 	public abstract DeebResource fromStatements(List<Statement> typeStatements,
 			Resource resource);
 	
+	/**
+	 * Erzeugt ein neues DeebResource-Objekt aus einem Resource-Objekt.
+	 * 
+	 * @param resource
+	 *            die Resource, die gekapselt werden soll
+	 * @return die gewuenschte Resource
+	 */
 	public abstract DeebResource fromResource(Resource resource);
+	
+	/**
+	 * Speichert die Deeb-Resource im angegebenen Modell. Dabei muss ein neues Resource-Objekt
+	 * aus dem Model erzeugt werden und die Eigenschaften der Reihe nach hinzugefuegt werden.
+	 * @param model
+	 */
+	public abstract void saveInModel(Model model);
 
 }

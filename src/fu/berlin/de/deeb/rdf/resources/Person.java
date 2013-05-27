@@ -3,6 +3,7 @@ package fu.berlin.de.deeb.rdf.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.VCARD;
@@ -17,8 +18,12 @@ import fu.berlin.de.deeb.rdf.DeebResource;
  */
 public class Person extends DeebResource {
 	
-	private String givenName;
-	private String lastName;
+	public Person(String identifier) {
+		super(identifier);
+	}
+
+	private String givenName = "";
+	private String lastName = "";
 
 	public String getGivenName() {
 		return givenName;
@@ -26,8 +31,10 @@ public class Person extends DeebResource {
 
 	public void setGivenName(String givenName) {
 		this.givenName = givenName;
-		getResource().removeAll(VCARD.Given);
-		getResource().addProperty(VCARD.Given, givenName);
+		if (getResource() != null) {
+			getResource().removeAll(VCARD.Given);
+			getResource().addProperty(VCARD.Given, givenName);
+		}
 	}
 
 	public String getLastName() {
@@ -36,14 +43,16 @@ public class Person extends DeebResource {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-		getResource().removeAll(VCARD.NAME);
-		getResource().addProperty(VCARD.NAME, lastName);
+		if (getResource() != null) {
+			getResource().removeAll(VCARD.NAME);
+			getResource().addProperty(VCARD.NAME, lastName);
+		}
 	}
 
 	@Override
 	public DeebResource fromStatements(List<Statement> typeStatements,
 			Resource resource) {
-		Person result = new Person();
+		Person result = new Person(resource.getURI());
 
 		return result;
 	}
@@ -61,15 +70,22 @@ public class Person extends DeebResource {
 	@Override
 	public DeebResource fromResource(Resource resource) {
 		setResource(resource);
-		Person person = new Person();
-		
+
 		String givenName = resource.getProperty(VCARD.Given).getString();
 		String lastName = resource.getProperty(VCARD.NAME).getString();
 		
-		setGivenName(givenName);
-		setLastName(lastName);
+		this.givenName = givenName;
+		this.lastName = lastName;
 		
-		return person;
+		return this;
+	}
+
+	@Override
+	public void saveInModel(Model model) {
+		Resource resource = model.createResource(getIdentifier());
+		
+		resource.addProperty(VCARD.Given, getGivenName());
+		resource.addProperty(VCARD.NAME, getLastName());
 	}
 	
 }

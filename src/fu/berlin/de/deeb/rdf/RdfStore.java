@@ -6,13 +6,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.os.Environment;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.JenaException;
+
+import fu.berlin.de.deeb.rdf.resources.Person;
 
 /**
  * Implementierung eines RDFStores
@@ -27,7 +37,6 @@ public class RdfStore implements DeebRdfStore {
 	private Model rdfModel;
 	
 	private final String XML_NAME = "rdfStore.xml";
-	private final String BASE_URI = "http://Example.org/Deeb";
 	
 	public static synchronized RdfStore getInstance() {
 		return (instance == null ? new RdfStore() : instance);
@@ -39,29 +48,45 @@ public class RdfStore implements DeebRdfStore {
 
 	@Override
 	public void addResource(DeebResource resource) {
-		rdfModel.begin();
-		rdfModel.add(resource.getStatements());
-		rdfModel.commit();
+		resource.saveInModel(rdfModel);
 	}
 
 	@Override
-	public List<DeebResource> performQuery(String queryString, String... params) {
-		// TODO Auto-generated method stub
-		return null;
+	public synchronized List<DeebResource> performQuery(String queryString, String... params) {
+		
+		Query query = QueryFactory.create(queryString);
+		QueryExecution execution = QueryExecutionFactory.create(query, rdfModel);
+		List<DeebResource> resources = new ArrayList<DeebResource>();
+		try {
+			ResultSet results = execution.execSelect();
+		    for ( ; results.hasNext() ; )
+		    {
+		    	QuerySolution solution = results.nextSolution() ;
+				Resource solResource = solution.getResource(params[0]);
+				//TODO: Typ der Resource herausfinden (durch eigene Property)
+				//zunächst einmal nur Persons akzeptieren
+				Person result = new Person(solResource.getURI());
+				result.fromResource(solResource);
+				resources.add(result);
+			}
+		} finally { execution.close() ; }
+		return resources;
 	}
 
 	@Override
-	public boolean loadStore(Context context) {
+	public boolean loadStore() {
 		String state = Environment.getExternalStorageState();
 		
 		if ((Environment.MEDIA_MOUNTED.equals(state)) || (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))) {
-		    File history = new File(context.getExternalFilesDir(null), XML_NAME);
+		    File history = new File(Environment.getExternalStorageDirectory() + "/fu_deeb", XML_NAME);
 		    if (history.exists()) {
 				try {
 					InputStream historyStream = new FileInputStream(history);
 					rdfModel.read(historyStream, null);
 					historyStream.close();
 				} catch (IOException e) {
+					return false;
+				} catch (JenaException e) {
 					return false;
 				}
 		    }
@@ -72,17 +97,19 @@ public class RdfStore implements DeebRdfStore {
 	}
 
 	@Override
-	public boolean saveStore(Context context) {
+	public boolean saveStore() {
 		String state = Environment.getExternalStorageState();
 		
 		if ((Environment.MEDIA_MOUNTED.equals(state)) || (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))) {
-		    File history = new File(context.getExternalFilesDir(null), XML_NAME);
+		    File history = new File(Environment.getExternalStorageDirectory() + "/fu_deeb", XML_NAME);
+		    history.mkdirs();
 		    if (history.exists()) {
 				history.delete();
 		    }
 			try {
 				OutputStream saveStream = new FileOutputStream(history);
 				rdfModel.write(saveStream);
+				rdfModel.close();
 				saveStream.close();
 				return true;
 			} catch (IOException e) {
@@ -91,6 +118,15 @@ public class RdfStore implements DeebRdfStore {
 		} else {
 		    return false;
 		}
+	}
+	
+	public void dumpStore(OutputStream stream) {
+		rdfModel.write(stream);
+	}
+
+	@Override
+	public void cleanStore() {
+		rdfModel = ModelFactory.createDefaultModel();
 	}
 	
 }
