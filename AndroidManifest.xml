@@ -15,13 +15,20 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="fu.berlin.de.webdatabrowser.deeb.MainActivity"
-            android:label="@string/app_name" >
+            android:name="fu.berlin.de.webdatabrowser.ui.WebBrowserActivity"
+            android:label="@string/title_activity_webbrowser" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="fu.berlin.de.webdatabrowser.ui.WebDataBrowserActivity"
+            android:label="@string/title_activity_webdatabrowser" >
+        </activity>
+        <activity
+            android:name="fu.berlin.de.webdatabrowser.ui.HistoryBrowserActivity"
+            android:label="@string/title_activity_historybrowser" >
         </activity>
     </application>
 

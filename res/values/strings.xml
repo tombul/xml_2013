@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">deeb</string>
+    <string name="app_name">WebDataBrowser</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_historybrowser">HistoryBrowser</string>
+    <string name="title_activity_webbrowser">WebBrowser</string>
+    <string name="title_activity_webdatabrowser">WebDataBrowser</string>
 
 </resources>
