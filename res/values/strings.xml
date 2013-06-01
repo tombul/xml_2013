@@ -7,5 +7,8 @@
     <string name="title_activity_historybrowser">HistoryBrowser</string>
     <string name="title_activity_webbrowser">WebBrowser</string>
     <string name="title_activity_webdatabrowser">WebDataBrowser</string>
+    <string name="menu_button_tohistorybrowser">HistoryBrowser</string>
+    <string name="menu_button_towebbrowser">WebBrowser</string>
+    <string name="menu_button_towebdatabrowser">WebDataBrowser</string>
 
 </resources>

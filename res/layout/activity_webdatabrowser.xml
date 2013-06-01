@@ -1,7 +1,38 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wdb="http://schemas.android.com/apk/res/fu.berlin.de.webdatabrowser"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/webdatabrowser_menu"
+        style="@style/Menu" >
+        
+        <fu.berlin.de.webdatabrowser.ui.widgets.MenuItem
+            android:id="@+id/webdatabrowser_menuitem_tohistorybrowser"
+            style="@style/MenuItem"
+            android:onClick="toHistoryBrowser"
+            wdb:text="@string/menu_button_tohistorybrowser"
+            wdb:drawable="@android:drawable/ic_menu_help"
+            android:layout_alignParentRight="true" />
+        
+        <fu.berlin.de.webdatabrowser.ui.widgets.MenuItem
+            android:id="@+id/webdatabrowser_menuitem_towebdatabrowser"
+            style="@style/MenuItem"
+            android:onClick="toWebDataBrowser"
+            wdb:text="@string/menu_button_towebdatabrowser"
+            wdb:drawable="@android:drawable/ic_menu_help"
+            android:layout_toLeftOf="@id/webdatabrowser_menuitem_tohistorybrowser" />
+        
+        <fu.berlin.de.webdatabrowser.ui.widgets.MenuItem
+            android:id="@+id/webdatabrowser_menuitem_towebbrowser"
+            style="@style/MenuItem"
+            android:onClick="toWebBrowser"
+            wdb:text="@string/menu_button_towebbrowser"
+            wdb:drawable="@android:drawable/ic_menu_help"
+            android:layout_toLeftOf="@id/webdatabrowser_menuitem_towebdatabrowser" />
+    </RelativeLayout>
+    
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -3,6 +3,7 @@ package fu.berlin.de.webdatabrowser.ui;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -11,6 +12,7 @@ import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
+import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
 
 public class HistoryBrowserActivity extends Activity {
 
@@ -21,7 +23,7 @@ public class HistoryBrowserActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historybrowser);
-
+        ((MenuItem) findViewById(R.id.historybrowser_menuitem_tohistorybrowser)).setHighlighted(true);
         rdfStore = RdfStore.getInstance();
 
     }
@@ -65,4 +67,18 @@ public class HistoryBrowserActivity extends Activity {
         rdfStore.saveStore();
     }
 
+    public void toHistoryBrowser(View view) {
+        startActivity(new Intent(this, HistoryBrowserActivity.class));
+        finish();
+    }
+
+    public void toWebBrowser(View view) {
+        startActivity(new Intent(this, WebBrowserActivity.class));
+        finish();
+    }
+
+    public void toWebDataBrowser(View view) {
+        startActivity(new Intent(this, WebDataBrowserActivity.class));
+        finish();
+    }
 }

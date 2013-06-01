@@ -16,5 +16,22 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="Menu" parent="android:Theme.Light">
+        <item name="android:background">@color/background_menu</item>
+	    <item name="android:layout_width">match_parent</item>
+	    <item name="android:layout_height">50dp</item>
+	    <item name="android:layout_alignParentBottom">true</item>
+    </style>
+    
+    <style name="MenuItem" >
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginLeft">2dip</item>
+        <item name="android:layout_marginRight">2dip</item>
+        <item name="android:layout_marginBottom">2dip</item>
+    </style>
 
 </resources>
