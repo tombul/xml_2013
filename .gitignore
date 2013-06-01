@@ -24,3 +24,5 @@ proguard/
 *.iws
 .idea/
 
+# OSX folder properties
+.DS_Store
