@@ -1,4 +1,4 @@
-package fu.berlin.de.webdatabrowser.deep;
+package fu.berlin.de.webdatabrowser.ui;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 
-public class MainActivity extends Activity {
+public class HistoryBrowserActivity extends Activity {
 
     private RdfStore rdfStore;
     private int      i = 0;
@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_historybrowser);
 
         rdfStore = RdfStore.getInstance();
 
