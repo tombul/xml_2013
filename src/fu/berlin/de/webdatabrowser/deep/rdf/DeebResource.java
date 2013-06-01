@@ -1,4 +1,4 @@
-package fu.berlin.de.deeb.rdf;
+package fu.berlin.de.webdatabrowser.deep.rdf;
 
 import java.util.List;
 

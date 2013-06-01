@@ -1,4 +1,4 @@
-package fu.berlin.de.deeb.rdf.resources;
+package fu.berlin.de.webdatabrowser.deep.rdf.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
-import fu.berlin.de.deeb.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 
 /**
  * Beispielhafte Implementierung einer {@link DeebResource} am Beispiel einer

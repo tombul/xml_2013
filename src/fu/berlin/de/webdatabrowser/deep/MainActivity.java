@@ -1,4 +1,4 @@
-package fu.berlin.de.deeb;
+package fu.berlin.de.webdatabrowser.deep;
 
 import java.util.List;
 
@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
-import fu.berlin.de.deeb.rdf.DeebResource;
-import fu.berlin.de.deeb.rdf.RdfStore;
-import fu.berlin.de.deeb.rdf.resources.Person;
+import fu.berlin.de.webdatabrowser.R;
+import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 
 public class MainActivity extends Activity {
 

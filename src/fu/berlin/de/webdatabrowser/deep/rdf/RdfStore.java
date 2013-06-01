@@ -1,4 +1,4 @@
-package fu.berlin.de.deeb.rdf;
+package fu.berlin.de.webdatabrowser.deep.rdf;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 
-import fu.berlin.de.deeb.rdf.resources.Person;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 
 /**
  * Implementierung eines RDFStores
