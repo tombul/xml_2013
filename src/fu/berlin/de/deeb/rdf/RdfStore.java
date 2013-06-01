@@ -26,107 +26,115 @@ import fu.berlin.de.deeb.rdf.resources.Person;
 
 /**
  * Implementierung eines RDFStores
+ * 
  * @author Jan-Christopher Pien
- * 27.05.2013
- *
+ *         27.05.2013
+ * 
  */
 public class RdfStore implements DeebRdfStore {
-	
-	private static RdfStore instance;
-	
-	private Model rdfModel;
-	
-	private final String XML_NAME = "rdfStore.xml";
-	
-	public static synchronized RdfStore getInstance() {
-		return (instance == null ? new RdfStore() : instance);
-	}
 
-	public RdfStore() {
-		rdfModel = ModelFactory.createDefaultModel();
-	}
+    private static RdfStore instance;
 
-	@Override
-	public void addResource(DeebResource resource) {
-		resource.saveInModel(rdfModel);
-	}
+    private Model           rdfModel;
 
-	@Override
-	public synchronized List<DeebResource> performQuery(String queryString, String... params) {
-		
-		Query query = QueryFactory.create(queryString);
-		QueryExecution execution = QueryExecutionFactory.create(query, rdfModel);
-		List<DeebResource> resources = new ArrayList<DeebResource>();
-		try {
-			ResultSet results = execution.execSelect();
-		    for ( ; results.hasNext() ; )
-		    {
-		    	QuerySolution solution = results.nextSolution() ;
-				Resource solResource = solution.getResource(params[0]);
-				//TODO: Typ der Resource herausfinden (durch eigene Property)
-				//zunächst einmal nur Persons akzeptieren
-				Person result = new Person(solResource.getURI());
-				result.fromResource(solResource);
-				resources.add(result);
-			}
-		} finally { execution.close() ; }
-		return resources;
-	}
+    private final String    XML_NAME = "rdfStore.xml";
 
-	@Override
-	public boolean loadStore() {
-		String state = Environment.getExternalStorageState();
-		
-		if ((Environment.MEDIA_MOUNTED.equals(state)) || (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))) {
-		    File history = new File(Environment.getExternalStorageDirectory() + "/fu_deeb", XML_NAME);
-		    if (history.exists()) {
-				try {
-					InputStream historyStream = new FileInputStream(history);
-					rdfModel.read(historyStream, null);
-					historyStream.close();
-				} catch (IOException e) {
-					return false;
-				} catch (JenaException e) {
-					return false;
-				}
-		    }
-		    return false;
-		} else {
-		    return false;
-		}
-	}
+    public static synchronized RdfStore getInstance() {
+        return(instance == null ? new RdfStore() : instance);
+    }
 
-	@Override
-	public boolean saveStore() {
-		String state = Environment.getExternalStorageState();
-		
-		if ((Environment.MEDIA_MOUNTED.equals(state)) || (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))) {
-		    File history = new File(Environment.getExternalStorageDirectory() + "/fu_deeb", XML_NAME);
-		    history.mkdirs();
-		    if (history.exists()) {
-				history.delete();
-		    }
-			try {
-				OutputStream saveStream = new FileOutputStream(history);
-				rdfModel.write(saveStream);
-				rdfModel.close();
-				saveStream.close();
-				return true;
-			} catch (IOException e) {
-				return false;
-			}
-		} else {
-		    return false;
-		}
-	}
-	
-	public void dumpStore(OutputStream stream) {
-		rdfModel.write(stream);
-	}
+    public RdfStore() {
+        rdfModel = ModelFactory.createDefaultModel();
+    }
 
-	@Override
-	public void cleanStore() {
-		rdfModel = ModelFactory.createDefaultModel();
-	}
-	
+    @Override
+    public void addResource(DeebResource resource) {
+        resource.saveInModel(rdfModel);
+    }
+
+    @Override
+    public synchronized List<DeebResource> performQuery(String queryString, String... params) {
+
+        Query query = QueryFactory.create(queryString);
+        QueryExecution execution = QueryExecutionFactory.create(query, rdfModel);
+        List<DeebResource> resources = new ArrayList<DeebResource>();
+        try {
+            ResultSet results = execution.execSelect();
+            for(; results.hasNext();) {
+                QuerySolution solution = results.nextSolution();
+                Resource solResource = solution.getResource(params[0]);
+                // TODO: Typ der Resource herausfinden (durch eigene Property)
+                // zunächst einmal nur Persons akzeptieren
+                Person result = new Person(solResource.getURI());
+                result.fromResource(solResource);
+                resources.add(result);
+            }
+        }
+        finally {
+            execution.close();
+        }
+        return resources;
+    }
+
+    @Override
+    public boolean loadStore() {
+        String state = Environment.getExternalStorageState();
+
+        if((Environment.MEDIA_MOUNTED.equals(state)) || (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))) {
+            File history = new File(Environment.getExternalStorageDirectory() + "/fu_deeb", XML_NAME);
+            if(history.exists()) {
+                try {
+                    InputStream historyStream = new FileInputStream(history);
+                    rdfModel.read(historyStream, null);
+                    historyStream.close();
+                }
+                catch(IOException e) {
+                    return false;
+                }
+                catch(JenaException e) {
+                    return false;
+                }
+            }
+            return false;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveStore() {
+        String state = Environment.getExternalStorageState();
+
+        if((Environment.MEDIA_MOUNTED.equals(state)) || (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))) {
+            File history = new File(Environment.getExternalStorageDirectory() + "/fu_deeb", XML_NAME);
+            history.mkdirs();
+            if(history.exists()) {
+                history.delete();
+            }
+            try {
+                OutputStream saveStream = new FileOutputStream(history);
+                rdfModel.write(saveStream);
+                rdfModel.close();
+                saveStream.close();
+                return true;
+            }
+            catch(IOException e) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void dumpStore(OutputStream stream) {
+        rdfModel.write(stream);
+    }
+
+    @Override
+    public void cleanStore() {
+        rdfModel = ModelFactory.createDefaultModel();
+    }
+
 }

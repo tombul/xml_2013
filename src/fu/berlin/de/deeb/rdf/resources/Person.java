@@ -11,81 +11,83 @@ import com.hp.hpl.jena.vocabulary.VCARD;
 import fu.berlin.de.deeb.rdf.DeebResource;
 
 /**
- * Beispielhafte Implementierung einer {@link DeebResource} am Beispiel einer Person.
+ * Beispielhafte Implementierung einer {@link DeebResource} am Beispiel einer
+ * Person.
+ * 
  * @author Jan-Christopher Pien
- * 27.05.2013
- *
+ *         27.05.2013
+ * 
  */
 public class Person extends DeebResource {
-	
-	public Person(String identifier) {
-		super(identifier);
-	}
 
-	private String givenName = "";
-	private String lastName = "";
+    public Person(String identifier) {
+        super(identifier);
+    }
 
-	public String getGivenName() {
-		return givenName;
-	}
+    private String givenName = "";
+    private String lastName  = "";
 
-	public void setGivenName(String givenName) {
-		this.givenName = givenName;
-		if (getResource() != null) {
-			getResource().removeAll(VCARD.Given);
-			getResource().addProperty(VCARD.Given, givenName);
-		}
-	}
+    public String getGivenName() {
+        return givenName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+        if(getResource() != null) {
+            getResource().removeAll(VCARD.Given);
+            getResource().addProperty(VCARD.Given, givenName);
+        }
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-		if (getResource() != null) {
-			getResource().removeAll(VCARD.NAME);
-			getResource().addProperty(VCARD.NAME, lastName);
-		}
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	@Override
-	public DeebResource fromStatements(List<Statement> typeStatements,
-			Resource resource) {
-		Person result = new Person(resource.getURI());
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+        if(getResource() != null) {
+            getResource().removeAll(VCARD.NAME);
+            getResource().addProperty(VCARD.NAME, lastName);
+        }
+    }
 
-		return result;
-	}
+    @Override
+    public DeebResource fromStatements(List<Statement> typeStatements,
+            Resource resource) {
+        Person result = new Person(resource.getURI());
 
-	@Override
-	public List<Statement> getStatements() {
-		Statement givenStatement = getResource().getProperty(VCARD.Given);
-		Statement lastStatement = getResource().getProperty(VCARD.NAME);
-		List<Statement> statementList = new ArrayList<Statement>();
-		statementList.add(givenStatement);
-		statementList.add(lastStatement);
-		return statementList;
-	}
+        return result;
+    }
 
-	@Override
-	public DeebResource fromResource(Resource resource) {
-		setResource(resource);
+    @Override
+    public List<Statement> getStatements() {
+        Statement givenStatement = getResource().getProperty(VCARD.Given);
+        Statement lastStatement = getResource().getProperty(VCARD.NAME);
+        List<Statement> statementList = new ArrayList<Statement>();
+        statementList.add(givenStatement);
+        statementList.add(lastStatement);
+        return statementList;
+    }
 
-		String givenName = resource.getProperty(VCARD.Given).getString();
-		String lastName = resource.getProperty(VCARD.NAME).getString();
-		
-		this.givenName = givenName;
-		this.lastName = lastName;
-		
-		return this;
-	}
+    @Override
+    public DeebResource fromResource(Resource resource) {
+        setResource(resource);
 
-	@Override
-	public void saveInModel(Model model) {
-		Resource resource = model.createResource(getIdentifier());
-		
-		resource.addProperty(VCARD.Given, getGivenName());
-		resource.addProperty(VCARD.NAME, getLastName());
-	}
-	
+        String givenName = resource.getProperty(VCARD.Given).getString();
+        String lastName = resource.getProperty(VCARD.NAME).getString();
+
+        this.givenName = givenName;
+        this.lastName = lastName;
+
+        return this;
+    }
+
+    @Override
+    public void saveInModel(Model model) {
+        Resource resource = model.createResource(getIdentifier());
+
+        resource.addProperty(VCARD.Given, getGivenName());
+        resource.addProperty(VCARD.NAME, getLastName());
+    }
+
 }

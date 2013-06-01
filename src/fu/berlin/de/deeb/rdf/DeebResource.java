@@ -20,79 +20,84 @@ import com.hp.hpl.jena.rdf.model.Statement;
  */
 public abstract class DeebResource {
 
-	private Resource resource;
-	private String identifier;
-	
-	public DeebResource(String identifier) {
-		this.identifier = identifier;
-	}
+    private Resource resource;
+    private String   identifier;
 
-	/**
-	 * Liefert die {@link http
-	 * ://jena.apache.org/documentation/javadoc/jena/com/hp
-	 * /hpl/jena/rdf/model/Resource.html Resource}, die von diesem Objekt
-	 * gekapselt wird. Diese Resource wird im eigentlichen Tripelstore
-	 * gespeichert und beinhaltet neben den eigentlichen Properties noch die
-	 * Eigenschaft, um welche Art von DeebResource es sich handelt, um das
-	 * Objekt spaeter rekonstruieren zu können.
-	 * 
-	 * @return die gekapselte Resource
-	 */
-	public Resource getResource() {
-		return resource;
-	}
-	
-	/**
-	 * Legt die zugrunde liegende Resource fest.
-	 * @param resource
-	 * 				Die zu speichernde Resource
-	 */
-	protected void setResource(Resource resource) {
-		this.resource = resource;
-	}
-	
-	public String getIdentifier() {
-		return identifier;
-	}
-	
-	protected void setIdentifier(String identifier) {
-		this.identifier = identifier;
-	}
-	
-	/**
-	 * Liefert alle Statements ueber diese Resource.
-	 * @return
-	 */
-	public abstract List<Statement> getStatements();
+    public DeebResource(String identifier) {
+        this.identifier = identifier;
+    }
 
-	/**
-	 * Erzeugt ein neues DeebResource-Objekt aus einer Liste von Statements, die
-	 * als Ergebnis einer Query erhalten wurden, je nachdem um welche Resource
-	 * es sich handelt.
-	 * 
-	 * @param typeStatements
-	 *            die Liste an Statements, die die Resource beschreiben
-	 * @param resource
-	 *            die Resource, die gekapselt werden soll
-	 * @return die gewuenschte Resource
-	 */
-	public abstract DeebResource fromStatements(List<Statement> typeStatements,
-			Resource resource);
-	
-	/**
-	 * Erzeugt ein neues DeebResource-Objekt aus einem Resource-Objekt.
-	 * 
-	 * @param resource
-	 *            die Resource, die gekapselt werden soll
-	 * @return die gewuenschte Resource
-	 */
-	public abstract DeebResource fromResource(Resource resource);
-	
-	/**
-	 * Speichert die Deeb-Resource im angegebenen Modell. Dabei muss ein neues Resource-Objekt
-	 * aus dem Model erzeugt werden und die Eigenschaften der Reihe nach hinzugefuegt werden.
-	 * @param model
-	 */
-	public abstract void saveInModel(Model model);
+    /**
+     * Liefert die {@link http
+     * ://jena.apache.org/documentation/javadoc/jena/com/hp
+     * /hpl/jena/rdf/model/Resource.html Resource}, die von diesem Objekt
+     * gekapselt wird. Diese Resource wird im eigentlichen Tripelstore
+     * gespeichert und beinhaltet neben den eigentlichen Properties noch die
+     * Eigenschaft, um welche Art von DeebResource es sich handelt, um das
+     * Objekt spaeter rekonstruieren zu können.
+     * 
+     * @return die gekapselte Resource
+     */
+    public Resource getResource() {
+        return resource;
+    }
+
+    /**
+     * Legt die zugrunde liegende Resource fest.
+     * 
+     * @param resource
+     *            Die zu speichernde Resource
+     */
+    protected void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    protected void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    /**
+     * Liefert alle Statements ueber diese Resource.
+     * 
+     * @return
+     */
+    public abstract List<Statement> getStatements();
+
+    /**
+     * Erzeugt ein neues DeebResource-Objekt aus einer Liste von Statements, die
+     * als Ergebnis einer Query erhalten wurden, je nachdem um welche Resource
+     * es sich handelt.
+     * 
+     * @param typeStatements
+     *            die Liste an Statements, die die Resource beschreiben
+     * @param resource
+     *            die Resource, die gekapselt werden soll
+     * @return die gewuenschte Resource
+     */
+    public abstract DeebResource fromStatements(List<Statement> typeStatements,
+            Resource resource);
+
+    /**
+     * Erzeugt ein neues DeebResource-Objekt aus einem Resource-Objekt.
+     * 
+     * @param resource
+     *            die Resource, die gekapselt werden soll
+     * @return die gewuenschte Resource
+     */
+    public abstract DeebResource fromResource(Resource resource);
+
+    /**
+     * Speichert die Deeb-Resource im angegebenen Modell. Dabei muss ein neues
+     * Resource-Objekt
+     * aus dem Model erzeugt werden und die Eigenschaften der Reihe nach
+     * hinzugefuegt werden.
+     * 
+     * @param model
+     */
+    public abstract void saveInModel(Model model);
 
 }
