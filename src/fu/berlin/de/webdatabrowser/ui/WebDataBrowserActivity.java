@@ -1,18 +1,64 @@
 package fu.berlin.de.webdatabrowser.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
+import fu.berlin.de.webdatabrowser.webdataparser.WebDataParser;
 
 public class WebDataBrowserActivity extends Activity {
+    public static final String  EXTRA_PASSED_URL = "webdatabrowser.passed_url";
+    private static final String LOG_TAG          = "WebDataBrowser";
+
+    private WebView             webView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webdatabrowser);
         ((MenuItem) findViewById(R.id.webdatabrowser_menuitem_towebdatabrowser)).setHighlighted(true);
+        webView = (WebView) findViewById(R.id.webdatabrowser_webview);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // We can handle here what to do with a link, explicitly. E.g.
+                // refering our RDF-model
+                return false;
+            }
+        });
+
+        String html = getHttpResponseString(getIntent().getStringExtra(EXTRA_PASSED_URL));
+
+        // TODO transform with WebDataParser.parse and get HTML-visualization
+        // for the resultset
+
+        // --- begin example code ---
+        int indexOfRoot = html.indexOf("<html");
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        html = xmlHeader + html.substring(indexOfRoot);
+        ByteArrayOutputStream outputStream = WebDataParser.applyXSL(
+                this, new ByteArrayInputStream(html.getBytes()), R.raw.xslt_example);
+        html = outputStream.toString();
+        html = "<!dotype html>" + html.substring(xmlHeader.length());
+        // --- end example code ---
+
+        webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
     }
 
     public void toHistoryBrowser(View view) {
@@ -26,5 +72,34 @@ public class WebDataBrowserActivity extends Activity {
     }
 
     public void toWebDataBrowser(View view) {
+    }
+
+    private String getHttpResponseString(String url) {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet(url);
+        String html = "";
+
+        try {
+            HttpResponse response = client.execute(request);
+            InputStream inputStream = response.getEntity().getContent();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(16);
+            byte[] buffer = new byte[16];
+            int bytesRead = 0;
+
+            while((bytesRead = inputStream.read(buffer, 0, buffer.length)) != -1)
+                outputStream.write(buffer, 0, bytesRead);
+
+            html = outputStream.toString();
+            inputStream.close();
+            outputStream.close();
+        }
+        catch(ClientProtocolException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        return html;
     }
 }

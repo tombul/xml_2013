@@ -41,7 +41,8 @@ public class WebBrowserActivity extends Activity {
     }
 
     public void toWebDataBrowser(View view) {
-        startActivity(new Intent(this, WebDataBrowserActivity.class));
+        startActivity(new Intent(this, WebDataBrowserActivity.class).
+                putExtra(WebDataBrowserActivity.EXTRA_PASSED_URL, webView.getUrl()));
         finish();
     }
 }

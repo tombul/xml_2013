@@ -3,7 +3,6 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -56,7 +55,7 @@ public class WebDataParser {
      * @param xslID ID of a XSL-stylesheet
      * @return Outputstream of the transformed document
      */
-    public static OutputStream applyXSL(Context context, InputStream sourceInputStream, int xslID) {
+    public static ByteArrayOutputStream applyXSL(Context context, InputStream sourceInputStream, int xslID) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
 
         try {
