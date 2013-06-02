@@ -26,7 +26,5 @@ public class WebDataBrowserActivity extends Activity {
     }
 
     public void toWebDataBrowser(View view) {
-        startActivity(new Intent(this, WebDataBrowserActivity.class));
-        finish();
     }
 }

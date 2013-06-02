@@ -38,8 +38,6 @@ public class WebBrowserActivity extends Activity {
     }
 
     public void toWebBrowser(View view) {
-        startActivity(new Intent(this, WebBrowserActivity.class));
-        finish();
     }
 
     public void toWebDataBrowser(View view) {

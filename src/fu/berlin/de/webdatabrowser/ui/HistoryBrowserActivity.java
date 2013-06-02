@@ -68,8 +68,6 @@ public class HistoryBrowserActivity extends Activity {
     }
 
     public void toHistoryBrowser(View view) {
-        startActivity(new Intent(this, HistoryBrowserActivity.class));
-        finish();
     }
 
     public void toWebBrowser(View view) {
