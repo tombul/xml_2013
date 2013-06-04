@@ -34,7 +34,6 @@ public class Person extends DeebResource {
     public void setGivenName(String givenName) {
         this.givenName = givenName;
         if(getResource() != null) {
-            getResource().removeAll(VCARD.Given);
             getResource().addProperty(VCARD.Given, givenName);
         }
     }
@@ -46,7 +45,6 @@ public class Person extends DeebResource {
     public void setLastName(String lastName) {
         this.lastName = lastName;
         if(getResource() != null) {
-            getResource().removeAll(VCARD.NAME);
             getResource().addProperty(VCARD.NAME, lastName);
         }
     }
