@@ -33,11 +33,34 @@
             android:layout_toLeftOf="@id/webbrowser_menuitem_towebdatabrowser" />
     </RelativeLayout>
     
+    <RelativeLayout 
+        android:id="@+id/webbrowser_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+        
+        <Button 
+            android:id="@+id/webbrowser_controls_button"
+            android:text="@string/webbrowser_button_loadurl"
+            android:onClick="loadUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+        
+        <EditText 
+            android:id="@+id/webbrowser_controls_addressbar"
+            android:inputType="textUri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/webbrowser_controls_button"/>  
+    </RelativeLayout>
+    
     <WebView
         android:id="@+id/webbrowser_webview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/webbrowser_controls"
         android:layout_above="@id/webbrowser_menu" />
 
 </RelativeLayout>

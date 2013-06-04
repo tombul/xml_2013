@@ -10,5 +10,6 @@
     <string name="menu_button_tohistorybrowser">HistoryBrowser</string>
     <string name="menu_button_towebbrowser">WebBrowser</string>
     <string name="menu_button_towebdatabrowser">WebDataBrowser</string>
+    <string name="webbrowser_button_loadurl">Go</string>
 
 </resources>
