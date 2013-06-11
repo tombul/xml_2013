@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import org.xml.sax.SAXException;
 
 import android.content.Context;
 import android.util.Log;
+import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 
 /**
@@ -35,11 +37,30 @@ public class WebDataParser {
      * @param source Inputstream of the data
      * @return A list of the found DeebResources
      */
-    public static List<DeebResource> parse(InputStream source) {
-        // TODO find out what kind of data 'source' contains and generate
-        // appropiate XML
-
-        // TODO generate DeebResources from that data
+    public static List<DeebResource> parse(String sourceCode, String url, Context context) {
+        
+        // Step 1: Get XML Document from a parser
+        String xmlDocument = "";
+        if (url.contains("europeana")){
+            xmlDocument = JSONParser.parseJSON(sourceCode);
+        } else if (url.contains("")){
+            //XML Parser
+        } else if (url.contains("")){
+            // Linked Data Parser
+        } else{
+            //e.g. Microdata Parser
+        }
+        
+        // Step 2: XSLT Transformation
+        ByteArrayOutputStream xsltResult;
+        ByteArrayInputStream xmlDocToInputStream = new ByteArrayInputStream(xmlDocument.getBytes());
+        int xsltID = R.raw.xslt_example;
+        xsltResult = applyXSL(context, xmlDocToInputStream, xsltID);
+               
+      
+                
+        // Step 4: Return the List of Deepresources -> TODO
+        
 
         // TODO put that resources in the RDF-model
 
