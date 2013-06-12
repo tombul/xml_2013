@@ -10,15 +10,29 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
 
 public class WebBrowserActivity extends Activity {
-    private static final String HOME_URL = "http://hasthelargehadroncolliderdestroyedtheworldyet.com";
+    private static String[] PRESET_URLS = { "http://www.google.de",
+                                        // TODO change to satisfy your needs
+                                        "http://www.europeana.eu",
+                                             // TODO change to satisfy your
+                                             // needs
+                                             "http://stackoverflow.com",
+                                             // TODO change to satisfy your
+                                             // needs
+                                             "http://dbpedia.org",
+                                             // TODO change to satisfy your
+                                             // needs
+                                             "http://www.openarchives.org" };
 
     private WebView             webView;
 
@@ -39,7 +53,6 @@ public class WebBrowserActivity extends Activity {
 
         ((MenuItem) findViewById(R.id.webbrowser_menuitem_towebbrowser)).setHighlighted(true);
         final EditText urlBar = (EditText) findViewById(R.id.webbrowser_controls_addressbar);
-        urlBar.setText(HOME_URL);
 
         // Hide menu while soft-keyboard is visible
         urlBar.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -69,6 +82,26 @@ public class WebBrowserActivity extends Activity {
                     default:
                         return false;
                 }
+            }
+        });
+
+        // HACK to avoid writing a full new adapter-class (due to lazynes), the
+        // unwanted text of the spinner has been made invisible and button /
+        // spinner have fixed dimensions
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, PRESET_URLS);
+        final Spinner spinner = (Spinner) findViewById(R.id.webbrowser_controls_spinner);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                urlBar.setText(spinnerAdapter.getItem(position));
+                loadUrl(null);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 

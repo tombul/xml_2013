@@ -39,19 +39,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
         
+        <Spinner
+            android:id="@+id/webbrowser_controls_spinner"
+            android:background="@drawable/expander_ic_minimized"
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_alignParentRight="true"/>
+        
         <Button 
             android:id="@+id/webbrowser_controls_button"
             android:text="@string/webbrowser_button_loadurl"
             android:onClick="loadUrl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"/>
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:layout_toLeftOf="@id/webbrowser_controls_spinner"/>
         
         <EditText 
             android:id="@+id/webbrowser_controls_addressbar"
             android:inputType="textUri"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dip"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@id/webbrowser_controls_button"/>  
     </RelativeLayout>
