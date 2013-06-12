@@ -72,8 +72,8 @@ public class WebDataBrowserActivity extends Activity {
 
     public void toWebDataBrowser(View view) {
     }
-    
-    private void onHttpRequestFinished(String html) {
+
+    protected void onHttpRequestFinished(String html) {
         List<DeebResource> resources = WebDataParser.parse(
                 html, getIntent().getStringExtra(EXTRA_PASSED_URL), this);
 
@@ -87,8 +87,8 @@ public class WebDataBrowserActivity extends Activity {
 
         webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
     }
-    
-    private String getHttpResponseString(String url) {
+
+    protected String getHttpResponseString(String url) {
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(url);
         String html = "";
