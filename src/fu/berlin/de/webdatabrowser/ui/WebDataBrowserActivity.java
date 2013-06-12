@@ -40,12 +40,11 @@ public class WebDataBrowserActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // We can handle here what to do with a link, explicitly. E.g.
-                // refering our RDF-model
+                // TODO Handle what to do with a link, e.g. refering our
+                // RDF-model
                 return false;
             }
         });
-        
 
         new AsyncTask<String, Void, String>() {
 
@@ -53,14 +52,12 @@ public class WebDataBrowserActivity extends Activity {
             protected String doInBackground(String... params) {
                 return getHttpResponseString(params[0]);
             }
-            
+
             @Override
             protected void onPostExecute(String result) {
                 onHttpRequestFinished(result);
             }
-            
         }.execute(getIntent().getExtras().getString(EXTRA_PASSED_URL));
-        
     }
 
     public void toHistoryBrowser(View view) {
