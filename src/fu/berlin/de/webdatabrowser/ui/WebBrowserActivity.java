@@ -1,5 +1,7 @@
 package fu.berlin.de.webdatabrowser.ui;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -111,7 +113,14 @@ public class WebBrowserActivity extends Activity {
     }
 
     public void loadUrl(View view) {
-        webView.loadUrl(((EditText) findViewById(R.id.webbrowser_controls_addressbar)).getText().toString());
+        String url = urlBar.getText().toString();
+
+        if(!url.toUpperCase(Locale.getDefault()).startsWith("HTTP://")) {
+            url = "http://" + url;
+            urlBar.setText(url);
+        }
+
+        webView.loadUrl(url);
         webView.requestFocus();
     }
 
