@@ -34,7 +34,8 @@ public class WebBrowserActivity extends Activity {
                                              // needs
                                              "http://www.openarchives.org" };
 
-    private WebView             webView;
+    protected EditText      urlBar;
+    private WebView         webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +44,17 @@ public class WebBrowserActivity extends Activity {
         webView = (WebView) findViewById(R.id.webbrowser_webview);
 
         // Prevent the default handler from starting a new activity on every
-        // link
+        // link and set text of the urlbar
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                urlBar.setText(url);
                 return false;
             }
         });
 
         ((MenuItem) findViewById(R.id.webbrowser_menuitem_towebbrowser)).setHighlighted(true);
-        final EditText urlBar = (EditText) findViewById(R.id.webbrowser_controls_addressbar);
+        urlBar = (EditText) findViewById(R.id.webbrowser_controls_addressbar);
 
         // Hide menu while soft-keyboard is visible
         urlBar.setOnFocusChangeListener(new OnFocusChangeListener() {
