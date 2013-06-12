@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,36 +39,42 @@ public class WebDataParser {
      * @return A list of the found DeebResources
      */
     public static List<DeebResource> parse(String sourceCode, String url, Context context) {
+        LinkedList<DeebResource> resources = new LinkedList<DeebResource>();
 
-        // Step 1: Get XML Document from a parser
-        String xmlDocument = "";
+        // get XML Document from a parser
+        String xmlDocument = null;
+
         if(url.contains("europeana")) {
+            Log.d(LOG_TAG, "trying to parse json");
             xmlDocument = JSONParser.parseJSON(sourceCode);
-
-            Log.i(LOG_TAG, xmlDocument);
         }
-        else if(url.contains("")) {
-            // XML Parser
+        else if(url.contains("openarchives")) {
+            Log.d(LOG_TAG, "trying to parse xml");
+            // TODO connect XMLParser
         }
-        else if(url.contains("")) {
-            // Linked Data Parser
+        else if(url.contains("dbpedia")) {
+            Log.d(LOG_TAG, "trying to parse rdf");
+            // TODO connect LinkedDataParser
         }
         else {
-            // e.g. Microdata Parser
+            Log.d(LOG_TAG, "trying to use the default parser");
+            // TODO connect MicrodataParser
         }
 
-        // Step 2: XSLT Transformation
-        ByteArrayOutputStream xsltResult;
-        ByteArrayInputStream xmlDocToInputStream = new ByteArrayInputStream(xmlDocument.getBytes());
-        int xsltID = R.raw.xslt_example;
-        xsltResult = applyXSL(context, xmlDocToInputStream, xsltID);
+        if(xmlDocument == null) {
+            Log.w(LOG_TAG, "nothing could be parsed");
+            return resources;
+        }
 
-        // Step 4: Return the List of Deepresources -> TODO
+        // apply XSL to receive RDFXML
+        Log.d(LOG_TAG, "applying xml_to_rdfxml.xsl");
+        ByteArrayOutputStream rdfXml = applyXSL(context,
+                new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml);
 
-        // TODO put that resources in the RDF-model
+        // TODO get resources from rdfXml
 
         // TODO return the data from this request (for visualization)
-        return null;
+        return resources;
     }
 
     /**
