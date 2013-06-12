@@ -1,6 +1,5 @@
 package fu.berlin.de.webdatabrowser.ui;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,18 +74,6 @@ public class WebDataBrowserActivity extends Activity {
     }
     
     private void onHttpRequestFinished(String html) {
-     // TODO transform with WebDataParser.parse and get HTML-visualization
-        // for the resultset
-
-        // --- begin example code ---
-        int indexOfRoot = html.indexOf("<html");
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        html = xmlHeader + html.substring(indexOfRoot);
-        ByteArrayOutputStream outputStream = WebDataParser.applyXSL(
-                this, new ByteArrayInputStream(html.getBytes()), R.raw.xslt_example);
-        html = outputStream.toString();
-        html = "<!dotype html>" + html.substring(xmlHeader.length());
-        // --- end example code ---
 
         webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
     }
