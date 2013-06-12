@@ -38,29 +38,31 @@ public class WebDataParser {
      * @return A list of the found DeebResources
      */
     public static List<DeebResource> parse(String sourceCode, String url, Context context) {
-        
+
         // Step 1: Get XML Document from a parser
         String xmlDocument = "";
-        if (url.contains("europeana")){
+        if(url.contains("europeana")) {
             xmlDocument = JSONParser.parseJSON(sourceCode);
-        } else if (url.contains("")){
-            //XML Parser
-        } else if (url.contains("")){
-            // Linked Data Parser
-        } else{
-            //e.g. Microdata Parser
+
+            Log.i(LOG_TAG, xmlDocument);
         }
-        
+        else if(url.contains("")) {
+            // XML Parser
+        }
+        else if(url.contains("")) {
+            // Linked Data Parser
+        }
+        else {
+            // e.g. Microdata Parser
+        }
+
         // Step 2: XSLT Transformation
         ByteArrayOutputStream xsltResult;
         ByteArrayInputStream xmlDocToInputStream = new ByteArrayInputStream(xmlDocument.getBytes());
         int xsltID = R.raw.xslt_example;
         xsltResult = applyXSL(context, xmlDocToInputStream, xsltID);
-               
-      
-                
+
         // Step 4: Return the List of Deepresources -> TODO
-        
 
         // TODO put that resources in the RDF-model
 
