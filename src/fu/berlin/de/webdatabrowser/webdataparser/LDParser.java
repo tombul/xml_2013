@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +51,7 @@ public final class LDParser {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(webContent);
+        Document doc = db.parse(new ByteArrayInputStream(webContent.getBytes()));
 
         NodeList rdfEntries = doc.getElementsByTagName("rdf:Description");
         Document targetDoc = db.newDocument();
