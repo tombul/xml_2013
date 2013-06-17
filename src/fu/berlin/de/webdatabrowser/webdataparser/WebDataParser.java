@@ -59,16 +59,13 @@ public class WebDataParser {
                 xmlDocument = LDParser.parseLD(sourceCode);
             }
             catch(ParserConfigurationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Log.w(LOG_TAG, Log.getStackTraceString(e));
             }
             catch(SAXException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Log.w(LOG_TAG, Log.getStackTraceString(e));
             }
             catch(IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Log.w(LOG_TAG, Log.getStackTraceString(e));
             }
         }
         else {
