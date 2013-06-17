@@ -17,18 +17,29 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 public final class LDParser {
-    
-    static ArrayList<String> tags = new ArrayList<String>( // befüllt mit ein paar Tags die man nehmen könnte
-                                          Arrays.asList("dbpedia-owl:populationTotal", //Einwohnerzahl
-                                                        "dbpedia-owl:leader", // Bürgermeister
-                                                        "geo:geometry", //Koordinaten POINT(13.3989 52.5006)
-                                                        "dbpedia-owl:areaTotal", // Gesamtfläche (xsd:double)
-                                                        "dbpedia-owl:birthPlace", // Geburtsort von...
-                                                        "dbpedia-owl:headquarter", // Hauptquartier von...
-                                                        "dbpedia-owl:hometown" // Heimatstadt von...
-                                                        ));
 
-    // Gibt dom document als string zurück
+    static ArrayList<String> tags = new ArrayList<String>(
+                                          // befuellt mit ein paar Tags die man
+                                          // nehmen koennte
+                                          Arrays.asList(
+                                                  // Einwohnerzahl
+                                                  "dbpedia-owl:populationTotal",
+                                                  // Buergermeister
+                                                  "dbpedia-owl:leader",
+                                                  // Koordinaten POINT(13.3989,
+                                                  // 52.5006)
+                                                  "geo:geometry",
+                                                  // Gesamtflaeche (xsd:double)
+                                                  "dbpedia-owl:areaTotal",
+                                                  // Geburtsort von...
+                                                  "dbpedia-owl:birthPlace",
+                                                  // Hauptquartier von...
+                                                  "dbpedia-owl:headquarter",
+                                                  // Heimatstadt von...
+                                                  "dbpedia-owl:hometown"
+                                                  ));
+
+    // Gibt dom document als string zurueck
     private static String getStringFromDoc(org.w3c.dom.Document doc) {
         DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
         LSSerializer lsSerializer = domImplementation.createLSSerializer();
@@ -57,8 +68,7 @@ public final class LDParser {
                 Node copyOfN = targetDoc.importNode(node, false);
                 for(int j = 0; j < children.getLength(); j++) {
                     Node cNode = children.item(j);
-                    for(String element : LDParser.tags)
-                    {
+                    for(String element : LDParser.tags) {
                         if(cNode.getNodeName() == element) {
                             copyOfN.appendChild(targetDoc.importNode(cNode, false));
                             importNode = true;
