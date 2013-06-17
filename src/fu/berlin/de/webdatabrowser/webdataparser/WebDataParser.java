@@ -54,7 +54,22 @@ public class WebDataParser {
         }
         else if(url.contains("dbpedia")) {
             Log.d(LOG_TAG, "trying to parse rdf");
-            // TODO connect LinkedDataParser
+
+            try {
+                xmlDocument = LDParser.parseLD(sourceCode);
+            }
+            catch(ParserConfigurationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch(SAXException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch(IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         else {
             Log.d(LOG_TAG, "trying to use the default parser");
