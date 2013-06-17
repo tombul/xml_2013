@@ -24,15 +24,14 @@ import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
 
 public class WebBrowserActivity extends Activity {
     private static String[] PRESET_URLS = { "http://www.google.de",
-                                        // TODO change to satisfy your needs
-                                        "http://www.europeana.eu",
-                                             // TODO change to satisfy your
-                                             // needs
-                                             "http://stackoverflow.com",
-                                             "http://dbpedia.org/data/Berlin.rdf",
-                                             // TODO change to satisfy your
-                                             // needs
-                                             "http://www.openarchives.org" };
+                                        "http://www.europeana.eu/portal/record/08547/6C2CF83E8A4F40A9C5D8074B8FB89ACA5AE45B60.html",
+                                        // TODO change to satisfy your
+                                        // needs
+                                        "http://stackoverflow.com",
+                                        "http://dbpedia.org/data/Berlin.rdf",
+                                        // TODO change to satisfy your
+                                        // needs
+                                        "http://www.openarchives.org" };
 
     protected EditText      urlBar;
     private WebView         webView;

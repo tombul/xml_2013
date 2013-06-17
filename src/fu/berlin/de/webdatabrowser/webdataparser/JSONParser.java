@@ -95,8 +95,8 @@ public final class JSONParser {
 
         String tags = convertTags(regularExp, JSONFileContent); // create tags
         String xmlDoc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                + "<object>\n" + tags + "</object>"; // create XML-document
-
+                + "<historicalObject>\n" + tags + "</historicalObject>"; // create
+                                                                         // XML-document
         return xmlDoc;
     }
 }
