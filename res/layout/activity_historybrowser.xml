@@ -17,7 +17,7 @@
             style="@style/MenuItem"
             android:onClick="toHistoryBrowser"
             wdb:text="@string/menu_button_tohistorybrowser"
-            wdb:drawable="@android:drawable/ic_menu_help"
+            wdb:drawable="@drawable/ic_menu_recent_history"
             android:layout_alignParentRight="true" />
         
         <fu.berlin.de.webdatabrowser.ui.widgets.MenuItem
@@ -25,7 +25,7 @@
             style="@style/MenuItem"
             android:onClick="toWebBrowser"
             wdb:text="@string/menu_button_towebbrowser"
-            wdb:drawable="@android:drawable/ic_menu_help"
+            wdb:drawable="@drawable/ic_globe"
             android:layout_toLeftOf="@id/historybrowser_menuitem_tohistorybrowser" />
     </RelativeLayout>
     
