@@ -19,26 +19,30 @@ import org.xml.sax.SAXException;
 
 public final class LDParser {
 
-    static ArrayList<String> tags = new ArrayList<String>(
-                                          // befuellt mit ein paar Tags die man
-                                          // nehmen koennte
-                                          Arrays.asList(
-                                                  // Einwohnerzahl
-                                                  "dbpedia-owl:populationTotal",
-                                                  // Buergermeister
-                                                  "dbpedia-owl:leader",
-                                                  // Koordinaten POINT(13.3989,
-                                                  // 52.5006)
-                                                  "geo:geometry",
-                                                  // Gesamtflaeche (xsd:double)
-                                                  "dbpedia-owl:areaTotal",
-                                                  // Geburtsort von...
-                                                  "dbpedia-owl:birthPlace",
-                                                  // Hauptquartier von...
-                                                  "dbpedia-owl:headquarter",
-                                                  // Heimatstadt von...
-                                                  "dbpedia-owl:hometown"
-                                                  ));
+    static ArrayList<String>    tags    = new ArrayList<String>(
+                                                // befuellt mit ein paar Tags
+                                                // die man
+                                                // nehmen koennte
+                                                Arrays.asList(
+                                                        // Einwohnerzahl
+                                                        "dbpedia-owl:populationTotal",
+                                                        // Buergermeister
+                                                        "dbpedia-owl:leader",
+                                                        // Koordinaten
+                                                        // POINT(13.3989,
+                                                        // 52.5006)
+                                                        "geo:geometry",
+                                                        // Gesamtflaeche
+                                                        // (xsd:double)
+                                                        "dbpedia-owl:areaTotal",
+                                                        // Geburtsort von...
+                                                        "dbpedia-owl:birthPlace",
+                                                        // Hauptquartier von...
+                                                        "dbpedia-owl:headquarter",
+                                                        // Heimatstadt von...
+                                                        "dbpedia-owl:hometown"
+                                                        ));
+    private static final String LOG_TAG = "LDParser";
 
     // Gibt dom document als string zurueck
     private static String getStringFromDoc(org.w3c.dom.Document doc) {
