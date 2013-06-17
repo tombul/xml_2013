@@ -29,8 +29,6 @@ public class WebBrowserActivity extends Activity {
                                              // TODO change to satisfy your
                                              // needs
                                              "http://stackoverflow.com",
-                                             // TODO change to satisfy your
-                                             // needs
                                              "http://dbpedia.org/data/Berlin.rdf",
                                              // TODO change to satisfy your
                                              // needs
