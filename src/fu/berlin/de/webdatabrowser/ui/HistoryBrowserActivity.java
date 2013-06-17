@@ -74,9 +74,4 @@ public class HistoryBrowserActivity extends Activity {
         startActivity(new Intent(this, WebBrowserActivity.class));
         finish();
     }
-
-    public void toWebDataBrowser(View view) {
-        startActivity(new Intent(this, WebDataBrowserActivity.class));
-        finish();
-    }
 }
