@@ -1,6 +1,7 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,17 +9,23 @@ import java.util.Arrays;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
-public final class LDParser {
+import android.util.Log;
 
+public final class LDParser {
     static ArrayList<String>    tags    = new ArrayList<String>(
                                                 // befuellt mit ein paar Tags
                                                 // die man
@@ -46,9 +53,23 @@ public final class LDParser {
 
     // Gibt dom document als string zurueck
     private static String getStringFromDoc(org.w3c.dom.Document doc) {
-        DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
-        LSSerializer lsSerializer = domImplementation.createLSSerializer();
-        return lsSerializer.writeToString(doc);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
+
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
+        }
+        catch(TransformerConfigurationException e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(TransformerFactoryConfigurationError e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(TransformerException e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        return outputStream.toString();
     }
 
     public static String parseLD(String webContent) throws ParserConfigurationException, SAXException, IOException {
