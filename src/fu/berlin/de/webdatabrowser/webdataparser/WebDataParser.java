@@ -64,8 +64,8 @@ public class WebDataParser {
             new MicrodataParser(this).parseMicroDataHtml(sourceCode, url, webDataBrowser);
         }
         else {
-            Log.d(LOG_TAG, "trying to use the default parser");
-            // TODO reconnect to normal browser, as fallback maybe?
+            Log.d(LOG_TAG, "no suitable parser available");
+            webDataBrowser.onParsingResultAvailable(new LinkedList<DeebResource>());
         }
     }
 
