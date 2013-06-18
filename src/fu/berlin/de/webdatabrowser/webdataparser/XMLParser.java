@@ -22,9 +22,9 @@ public class XMLParser extends BasicParser {
         if(newSource != null) {
             ByteArrayOutputStream outputStream = WebDataParser.applyXSL(context, new ByteArrayInputStream(newSource.getBytes()), R.raw.xslt_oaipmh_identify);
             String xmlDocument = outputStream.toString();
+            writeToFile(xmlDocument, "xmlPOSTXSLT.xml");
             return xmlDocument;
         }
         return null;
     }
-
 }
