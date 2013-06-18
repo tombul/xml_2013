@@ -69,7 +69,7 @@ public class WebDataParser {
         }
         else {
             Log.d(LOG_TAG, "trying to use the default parser");
-            // TODO connect MicrodataParser
+            // TODO reconnect to normal browser, as fallback maybe?
         }
 
         if(xmlDocument == null) {
