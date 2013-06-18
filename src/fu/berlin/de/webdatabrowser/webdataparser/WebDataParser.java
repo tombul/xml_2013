@@ -96,6 +96,7 @@ public class WebDataParser {
         }
         catch(SAXParseException e) {
             Log.e(LOG_TAG, e.getMessage() + " " + e.getLineNumber() + ", " + e.getColumnNumber());
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
         catch(SAXException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
