@@ -17,6 +17,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import android.content.Context;
@@ -50,7 +51,7 @@ public class WebDataParser {
             xmlDocument = jsonParser.parseJSON(sourceCode);
             jsonParser = null;
         }
-        else if(url.contains("openarchives.org/Register/BrowseSites?viewRecord")) {
+        else if(url.contains("abe.tudelft.nl/index.php/faculty-architecture/oai")) {
             Log.d(LOG_TAG, "trying to parse xml");
             XMLParser xmlParser = new XMLParser();
             xmlDocument = xmlParser.parseXML(url, context);
@@ -82,6 +83,8 @@ public class WebDataParser {
         ByteArrayOutputStream rdfXml = applyXSL(context,
                 new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml);
 
+        Log.v(LOG_TAG, rdfXml.toString());
+
         // TODO get resources from rdfXml
 
         // TODO return the data from this request (for visualization)
@@ -100,8 +103,8 @@ public class WebDataParser {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
 
         try {
-            Source source = new DOMSource(
-                    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(sourceInputStream));
+            Document sourceDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(sourceInputStream);
+            Source source = new DOMSource(sourceDocument);
             Transformer transformer = TransformerFactory.newInstance().newTransformer(
                     new StreamSource(context.getResources().openRawResource(xslID)));
             StreamResult result = new StreamResult(outputStream);

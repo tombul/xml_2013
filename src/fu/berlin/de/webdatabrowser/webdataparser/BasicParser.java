@@ -10,9 +10,11 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
 
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -38,20 +40,15 @@ public class BasicParser {
     }
 
     private String getHttpResponseString(String url, String agent) {
-        String defaultAgent = "Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30";
-        AndroidHttpClient client = null;
-        if(!(agent == null || agent.isEmpty())) {
-            client = AndroidHttpClient.newInstance(agent);
-        }
-        else {
-            client = AndroidHttpClient.newInstance(defaultAgent);
-        }
+        final String defaultAgent = "Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30";
+        agent = agent == null ? defaultAgent : agent;
+        HttpClient client = new DefaultHttpClient();
+        client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, agent);
         HttpGet request = new HttpGet(url);
         String html = "";
 
         try {
             HttpResponse response = client.execute(request);
-            client.close();
             InputStream inputStream = response.getEntity().getContent();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(16);
             byte[] buffer = new byte[16];
