@@ -16,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -50,7 +51,7 @@ public class WebDataParser {
             Log.d(LOG_TAG, "trying to parse json");
             new JSONParser(this).parseJSON(sourceCode);
         }
-        else if(url.contains("openarchives.org/Register/BrowseSites?viewRecord")) {
+        else if(url.contains("abe.tudelft.nl/index.php/faculty-architecture/oai")) {
             Log.d(LOG_TAG, "trying to parse xml");
             new XMLParser(this).parseXML(url);
         }
@@ -80,8 +81,8 @@ public class WebDataParser {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
 
         try {
-            Source source = new DOMSource(
-                    DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(sourceInputStream));
+            Document sourceDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(sourceInputStream);
+            Source source = new DOMSource(sourceDocument);
             Transformer transformer = TransformerFactory.newInstance().newTransformer(
                     new StreamSource(context.getResources().openRawResource(xslID)));
             StreamResult result = new StreamResult(outputStream);
