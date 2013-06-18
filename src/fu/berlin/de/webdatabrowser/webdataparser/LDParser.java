@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 import android.util.Log;
 
-public final class LDParser {
+public class LDParser {
     static ArrayList<String>    tags    = new ArrayList<String>(
                                                 // befuellt mit ein paar Tags
                                                 // die man
@@ -52,7 +52,7 @@ public final class LDParser {
     private static final String LOG_TAG = "LDParser";
 
     // Gibt dom document als string zurueck
-    private static String getStringFromDoc(org.w3c.dom.Document doc) {
+    private String getStringFromDoc(org.w3c.dom.Document doc) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
 
         try {
@@ -72,15 +72,27 @@ public final class LDParser {
         return outputStream.toString();
     }
 
-    public static String parseLD(String webContent) throws ParserConfigurationException, SAXException, IOException {
+    public String parseLD(String webContent) {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(new ByteArrayInputStream(webContent.getBytes()));
+        DocumentBuilder db = null;
+        Document doc = null;
+        try {
+            db = dbf.newDocumentBuilder();
+            doc = db.parse(new ByteArrayInputStream(webContent.getBytes()));
+        }
+        catch(ParserConfigurationException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(SAXException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
 
         NodeList rdfEntries = doc.getElementsByTagName("rdf:Description");
         Document targetDoc = db.newDocument();
-
         Element root = targetDoc.createElement("rdf:RDF");
         targetDoc.appendChild(root);
 
@@ -105,9 +117,9 @@ public final class LDParser {
                     targetDoc.getDocumentElement().appendChild(copyOfN);
             }
         }
+        String result = getStringFromDoc(targetDoc);
 
-        return LDParser.getStringFromDoc(targetDoc);
-
+        return result;
     }
 
 }

@@ -25,13 +25,14 @@ import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
 public class WebBrowserActivity extends Activity {
     private static String[] PRESET_URLS = { "http://www.google.de",
                                         "http://www.europeana.eu/portal/record/08547/6C2CF83E8A4F40A9C5D8074B8FB89ACA5AE45B60.html",
-                                        // TODO change to satisfy your
-                                        // needs
-                                        "http://stackoverflow.com",
+                                        "http://stackoverflow.com/questions/17045027/take-screenshot-without-one-specific-program-window",
+                                        "http://stackoverflow.com/questions/1489826/how-to-get-the-number-of-days-in-a-given-month-in-ruby-accounting-for-year",
                                         "http://dbpedia.org/data/Berlin.rdf",
-                                        // TODO change to satisfy your
-                                        // needs
-                                        "http://www.openarchives.org" };
+                                        "http://www.openarchives.org/Register/BrowseSites?viewRecord=http://abe.tudelft.nl/index.php/faculty-architecture/oai",
+                                        "http://www.openarchives.org/Register/BrowseSites?viewRecord=http://digital.library.upenn.edu/webbin/OAI-celebration",
+                                        "http://www.openarchives.org/Register/BrowseSites?viewRecord=http://crf.flib.u-fukui.ac.jp/dspace-oai/request",
+                                        "http://www.openarchives.org/Register/BrowseSites?viewRecord=http://ir.lib.fukushima-u.ac.jp/dspace-oai/request",
+                                        "http://www.openarchives.org/Register/BrowseSites?viewRecord=http://archiv.ub.uni-marburg.de/oai/provider" };
 
     protected EditText      urlBar;
     private WebView         webView;
@@ -77,6 +78,7 @@ public class WebBrowserActivity extends Activity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 switch(actionId) {
                     case EditorInfo.IME_ACTION_DONE:
+                    case EditorInfo.IME_ACTION_GO:
                     case EditorInfo.IME_ACTION_NEXT:
                         loadUrl(null);
                         return true;
