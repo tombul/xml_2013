@@ -50,6 +50,11 @@ public class LDParser {
                                                         "dbpedia-owl:hometown"
                                                         ));
     private static final String LOG_TAG = "LDParser";
+    private final WebDataParser resultHandler;
+
+    public LDParser(WebDataParser resultHandler) {
+        this.resultHandler = resultHandler;
+    }
 
     // Gibt dom document als string zurueck
     private String getStringFromDoc(org.w3c.dom.Document doc) {
@@ -72,11 +77,12 @@ public class LDParser {
         return outputStream.toString();
     }
 
-    public String parseLD(String webContent) {
+    public void parseLD(String webContent) {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
         Document doc = null;
+
         try {
             db = dbf.newDocumentBuilder();
             doc = db.parse(new ByteArrayInputStream(webContent.getBytes()));
@@ -118,8 +124,7 @@ public class LDParser {
             }
         }
         String result = getStringFromDoc(targetDoc);
-
-        return result;
+        resultHandler.onParsingResultAvailable(result);
     }
 
 }

@@ -17,10 +17,9 @@ import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
 import fu.berlin.de.webdatabrowser.webdataparser.WebDataParser;
 
 public class WebDataBrowserActivity extends Activity implements HttpResponseHandler {
-    public static final String  EXTRA_PASSED_URL = "webdatabrowser.passed_url";
-    private static final String LOG_TAG          = "WebDataBrowser";
+    public static final String EXTRA_PASSED_URL = "webdatabrowser.passed_url";
 
-    private WebView             webView;
+    private WebView            webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +52,8 @@ public class WebDataBrowserActivity extends Activity implements HttpResponseHand
     public void toWebDataBrowser(View view) {
     }
 
-    @Override
-    public void onHttpResultAvailable(String source) {
-        List<DeebResource> resources = WebDataParser.parse(
-                source, getIntent().getStringExtra(EXTRA_PASSED_URL), this);
+    public void onParsingResultAvailable(List<DeebResource> resources) {
+        String source = "";
 
         if(resources.isEmpty()) {
             source = "<!DOCTYPE html><html>Nothing useful found.</html>";
@@ -69,5 +66,10 @@ public class WebDataBrowserActivity extends Activity implements HttpResponseHand
         // TODO Get HTML-visualization for the resultset
 
         webView.loadDataWithBaseURL(null, source, "text/html", "UTF-8", null);
+    }
+
+    @Override
+    public void onHttpResultAvailable(String source) {
+        new WebDataParser(this).parse(source, getIntent().getStringExtra(EXTRA_PASSED_URL));
     }
 }

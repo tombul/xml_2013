@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,13 +23,19 @@ import android.content.Context;
 import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.ui.WebDataBrowserActivity;
 
 /**
  * This class provides methods to transform arbitrary web-data to XML-documents
  * as well as to transfom XML-documents using XSL-stylesheets.
  */
 public class WebDataParser {
-    private static final String LOG_TAG = "Parser";
+    private static final String          LOG_TAG = "Parser";
+    private final WebDataBrowserActivity webDataBrowser;
+
+    public WebDataParser(WebDataBrowserActivity webDataBrowser) {
+        this.webDataBrowser = webDataBrowser;
+    }
 
     /**
      * Parses any input, trying to find any RDF-Ressources. Any resource found
@@ -39,54 +44,28 @@ public class WebDataParser {
      * @param source Inputstream of the data
      * @return A list of the found DeebResources
      */
-    public static List<DeebResource> parse(String sourceCode, String url, Context context) {
-        LinkedList<DeebResource> resources = new LinkedList<DeebResource>();
-
+    public void parse(String sourceCode, String url) {
         // get XML Document from a parser
-        String xmlDocument = null;
-
         if(url.contains("europeana")) {
             Log.d(LOG_TAG, "trying to parse json");
-            JSONParser jsonParser = new JSONParser();
-            xmlDocument = jsonParser.parseJSON(sourceCode);
-            jsonParser = null;
+            new JSONParser(this).parseJSON(sourceCode);
         }
         else if(url.contains("openarchives.org/Register/BrowseSites?viewRecord")) {
             Log.d(LOG_TAG, "trying to parse xml");
-            XMLParser xmlParser = new XMLParser();
-            xmlDocument = xmlParser.parseXML(url, context);
-            xmlParser = null;
+            new XMLParser(this).parseXML(url);
         }
         else if(url.contains("dbpedia")) {
             Log.d(LOG_TAG, "trying to parse rdf");
-            LDParser ldParser = new LDParser();
-            xmlDocument = ldParser.parseLD(sourceCode);
+            new LDParser(this).parseLD(sourceCode);
         }
         else if(url.matches(".*stackoverflow.com/questions/.+")) {
             Log.d(LOG_TAG, "trying to parse microdata");
-            MicrodataParser microdataParser = new MicrodataParser();
-            xmlDocument = microdataParser.parseMicroDataHtml(sourceCode, url, context).toString();
-            Log.d(LOG_TAG, "parsed microdata");
+            new MicrodataParser(this).parseMicroDataHtml(sourceCode, url, webDataBrowser);
         }
         else {
             Log.d(LOG_TAG, "trying to use the default parser");
             // TODO reconnect to normal browser, as fallback maybe?
         }
-
-        if(xmlDocument == null) {
-            Log.w(LOG_TAG, "nothing could be parsed");
-            return resources;
-        }
-
-        // apply XSL to receive RDFXML
-        Log.d(LOG_TAG, "applying xml_to_rdfxml.xsl");
-        ByteArrayOutputStream rdfXml = applyXSL(context,
-                new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml);
-
-        // TODO get resources from rdfXml
-
-        // TODO return the data from this request (for visualization)
-        return resources;
     }
 
     /**
@@ -127,4 +106,27 @@ public class WebDataParser {
         return outputStream;
     }
 
+    public void onParsingResultAvailable(String xmlDocument) {
+        LinkedList<DeebResource> resources = new LinkedList<DeebResource>();
+
+        if(xmlDocument == null) {
+            Log.w(LOG_TAG, "nothing could be parsed");
+            webDataBrowser.onParsingResultAvailable(resources);
+            return;
+        }
+
+        // apply XSL to receive RDFXML
+        Log.d(LOG_TAG, "applying xml_to_rdfxml.xsl");
+        ByteArrayOutputStream rdfXml = applyXSL(webDataBrowser,
+                new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml);
+
+        // TODO get resources from rdfXml
+
+        // TODO return the data from this request (for visualization)
+        webDataBrowser.onParsingResultAvailable(resources);
+    }
+
+    public Context getContext() {
+        return webDataBrowser;
+    }
 }
