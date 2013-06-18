@@ -18,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import android.content.Context;
 import android.util.Log;
@@ -112,6 +113,9 @@ public class WebDataParser {
         }
         catch(TransformerException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(SAXParseException e) {
+            Log.e(LOG_TAG, e.getMessage() + " " + e.getLineNumber() + ", " + e.getColumnNumber());
         }
         catch(SAXException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
