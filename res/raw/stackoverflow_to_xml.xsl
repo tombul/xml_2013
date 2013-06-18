@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns="http://www.fu-berlin.de/deeb/WebBrowser" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:template match="/root/div[id='question-header']">
     	<name>
 	        <xsl:copy-of select="./h1"/>

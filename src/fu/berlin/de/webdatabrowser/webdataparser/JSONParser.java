@@ -12,16 +12,15 @@ public class JSONParser extends BasicParser {
         if(!matcher.find()) {
             return null;
         }
-        String ID = matcher.group();
-        ID = ID.substring(28, ID.length() - 2); // remove help chars used to
-                                                // find
-        return ID;
+        String iD = matcher.group();
+        Integer end = iD.indexOf("\">");
+        iD = iD.substring(28, end); // remove help chars used to
+        return iD;
     }
 
     // gets an ID and returns the JSON-document of this ID
     private String getJSONContent(String ID) {
         String url = "http://europeana.eu/api/v2/record/" + ID + ".json?wskey=PmbkTtFZf&profile=full";
-
         return getAsyncResults(url, null);
     }
 
@@ -38,7 +37,7 @@ public class JSONParser extends BasicParser {
                     value += String.valueOf(content.charAt(pos));
                     pos++;
                 }
-                tags += "\t<" + regularExp[i][2] + ">" + value + "</" + regularExp[i][2] + ">\n";
+                tags += "\t<" + regularExp[i][2] + ">" + value.replace("&", "&amp;") + "</" + regularExp[i][2] + ">\n";
             }
         }
         return tags;
@@ -48,32 +47,32 @@ public class JSONParser extends BasicParser {
     // whose ID is in the content
     public String parseJSON(String webContent) {
 
-        String JSONID = getJSONFileID(webContent);
-        if(JSONID == null) { // The page doesn't contain any ID's
+        String jSONID = getJSONFileID(webContent);
+        if(jSONID == null) { // The page doesn't contain any ID's
             return null;
         }
 
-        String JSONFileContent = getJSONContent(JSONID);
-        if(JSONFileContent == null) { // Did not get content with the ID
+        String jSONFileContent = getJSONContent(jSONID);
+        if(jSONFileContent == null) { // Did not get content with the ID
             return null;
         }
 
         // Tags we want: titel, #chars to content, new tagname
         String[][] regularExp = {
-                { "dcTitle.*", "18", "titel" },
+                { "dcTitle.*", "18", "title" },
                 { "dcType.*", "17", "type" },
-                { "edmPreview*", "13", "preview" },
+                { "edmPreview.*", "13", "preview" },
                 { "dcDescription.*", "24", "description" },
                 { "edmLanguage.*", "22", "language" },
                 { "edmCountry.*", "21", "country" },
-                { "edmLandingPage.*}", "17", "url" },
+                { "edmLandingPage.*", "17", "url" },
                 { "edmDataProvider.*", "26", "provider" } };
 
-        String tags = convertTags(regularExp, JSONFileContent); // create tags
+        String tags = convertTags(regularExp, jSONFileContent); // create tags
         String xmlDoc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
                 + "<historicalObject>\n" + tags + "</historicalObject>"; // create
                                                                          // XML-document
+
         return xmlDoc;
     }
-
 }

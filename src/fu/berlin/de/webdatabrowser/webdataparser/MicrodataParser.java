@@ -5,26 +5,13 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
-
-import com.jamesmurty.utils.XMLBuilder;
-
 import fu.berlin.de.webdatabrowser.R;
 
 /**
@@ -89,64 +76,39 @@ public class MicrodataParser extends BasicParser {
         htmlToParse.getElementsByTag("br").remove();
         htmlToParse.getElementsByTag("form").remove();
         htmlToParse.select("img").after("</img>");
+        // htmlToParse.getElementsByTag("img").remove();
         return htmlToParse;
     }
 
     private String buildXML(Element cleanHtml) {
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String html = "<root>" + cleanHtml.getElementById("question-header").outerHtml();
+        String html = "<root xmlns=\"http://www.fu-berlin.de/deeb/WebBrowser\">" + cleanHtml.getElementById("question-header").outerHtml();
         html = html.concat(cleanHtml.getElementById("mainbar").outerHtml());
         String xml = xmlHeader.concat(html + "</root>");
         ByteArrayOutputStream out = new ByteArrayOutputStream(32);
-        try {
-            XMLBuilder builder = XMLBuilder.parse(new InputSource(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-            xml = builder.asString();
-            xml = xmlHeader + xml;
-        }
-        catch(UnsupportedEncodingException e) {
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-        }
-        catch(IOException e) {
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-        }
-        catch(ParserConfigurationException e) {
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-        }
-        catch(SAXException e) {
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-        }
-        catch(TransformerException e) {
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-        }
+        // try {
+        // XMLBuilder builder = XMLBuilder.parse(new InputSource(new
+        // ByteArrayInputStream(xml.getBytes("UTF-8"))));
+        // xml = builder.asString();
+        // xml = xmlHeader + xml;
+        // }
+        // catch(UnsupportedEncodingException e) {
+        // Log.e(LOG_TAG, Log.getStackTraceString(e));
+        // }
+        // catch(IOException e) {
+        // Log.e(LOG_TAG, Log.getStackTraceString(e));
+        // }
+        // catch(ParserConfigurationException e) {
+        // Log.e(LOG_TAG, Log.getStackTraceString(e));
+        // }
+        // catch(SAXException e) {
+        // Log.e(LOG_TAG, Log.getStackTraceString(e));
+        // }
+        // catch(TransformerException e) {
+        // Log.e(LOG_TAG, Log.getStackTraceString(e));
+        // }
 
         return xml;
-    }
-
-    private void writeToFile(String input, String fileName) {
-        String state = Environment.getExternalStorageState();
-        if(Environment.MEDIA_MOUNTED.equals(state)) {
-            Log.d("Test", "sdcard mounted and writable");
-            File myFile = new File(Environment.getExternalStorageDirectory().getPath() + "/" + fileName);
-            Log.d("test-path", Environment.getExternalStorageDirectory().getPath() + "/" + fileName);
-            try {
-                myFile.createNewFile();
-                FileOutputStream fOut = new FileOutputStream(myFile);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-                myOutWriter.append(input);
-                myOutWriter.close();
-                fOut.close();
-                Log.d("Test-done", "writen without errors");
-            }
-            catch(IOException e) {
-                Log.e("Test", Log.getStackTraceString(e));
-            }
-        }
-        else if(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            Log.d("Test", "sdcard mounted readonly");
-        }
-        else {
-            Log.d("Test", "sdcard state: " + state);
-        }
     }
 
 }
