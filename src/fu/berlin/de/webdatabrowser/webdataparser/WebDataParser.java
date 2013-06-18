@@ -46,27 +46,26 @@ public class WebDataParser {
 
         if(url.contains("europeana")) {
             Log.d(LOG_TAG, "trying to parse json");
-            xmlDocument = JSONParser.parseJSON(sourceCode);
+            JSONParser jsonParser = new JSONParser();
+            xmlDocument = jsonParser.parseJSON(sourceCode);
+            jsonParser = null;
         }
-        else if(url.contains("openarchives")) {
+        else if(url.contains("openarchives.org/Register/BrowseSites?viewRecord")) {
             Log.d(LOG_TAG, "trying to parse xml");
-            // TODO connect XMLParser
+            XMLParser xmlParser = new XMLParser();
+            xmlDocument = xmlParser.parseXML(url, context);
+            xmlParser = null;
         }
         else if(url.contains("dbpedia")) {
             Log.d(LOG_TAG, "trying to parse rdf");
-
-            try {
-                xmlDocument = LDParser.parseLD(sourceCode);
-            }
-            catch(ParserConfigurationException e) {
-                Log.w(LOG_TAG, Log.getStackTraceString(e));
-            }
-            catch(SAXException e) {
-                Log.w(LOG_TAG, Log.getStackTraceString(e));
-            }
-            catch(IOException e) {
-                Log.w(LOG_TAG, Log.getStackTraceString(e));
-            }
+            LDParser ldParser = new LDParser();
+            xmlDocument = ldParser.parseLD(sourceCode);
+        }
+        else if(url.matches(".*stackoverflow.com/questions/.+")) {
+            Log.d(LOG_TAG, "trying to parse microdata");
+            MicrodataParser microdataParser = new MicrodataParser();
+            xmlDocument = microdataParser.parseMicroDataHtml(sourceCode, url, context).toString();
+            Log.d(LOG_TAG, "parsed microdata");
         }
         else {
             Log.d(LOG_TAG, "trying to use the default parser");
@@ -123,4 +122,5 @@ public class WebDataParser {
 
         return outputStream;
     }
+
 }

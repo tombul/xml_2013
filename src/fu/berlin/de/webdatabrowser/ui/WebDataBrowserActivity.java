@@ -77,11 +77,13 @@ public class WebDataBrowserActivity extends Activity {
         List<DeebResource> resources = WebDataParser.parse(
                 html, getIntent().getStringExtra(EXTRA_PASSED_URL), this);
 
-        if(resources.isEmpty())
+        if(resources.isEmpty()) {
             html = "<!DOCTYPE html><html>Nothing useful found.</html>";
+        }
 
-        for(DeebResource resource : resources)
+        for(DeebResource resource : resources) {
             RdfStore.getInstance().addResource(resource);
+        }
 
         // TODO Get HTML-visualization for the resultset
 
@@ -100,8 +102,9 @@ public class WebDataBrowserActivity extends Activity {
             byte[] buffer = new byte[16];
             int bytesRead = 0;
 
-            while((bytesRead = inputStream.read(buffer, 0, buffer.length)) != -1)
+            while((bytesRead = inputStream.read(buffer, 0, buffer.length)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
+            }
 
             html = outputStream.toString();
             inputStream.close();

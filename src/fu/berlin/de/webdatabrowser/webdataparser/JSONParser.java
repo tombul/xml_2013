@@ -1,14 +1,11 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class JSONParser {
-    private static String getJSONFileID(String code) {
+public class JSONParser extends BasicParser {
+
+    private String getJSONFileID(String code) {
         // If code containts an ID of a JSON-Document, extract the ID and return
         // it, otherwise null
         Matcher matcher = Pattern.compile("europeana.eu/resolve/record/.*\">").matcher(code);
@@ -22,38 +19,15 @@ public final class JSONParser {
     }
 
     // gets an ID and returns the JSON-document of this ID
-    private static String getJSONContent(String ID) {
+    private String getJSONContent(String ID) {
         String url = "http://europeana.eu/api/v2/record/" + ID + ".json?wskey=PmbkTtFZf&profile=full";
 
-        // Create reader to read web content
-        BufferedReader r = null;
-        try {
-            r = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
-        }
-        catch(IOException e1) {
-        }
-
-        // No internet connection or no JSON document with the ID
-        if(r == null)
-            return null;
-
-        // Read web content and copy into a String
-        String line = null;
-        String content = "";
-        try {
-            while((line = r.readLine()) != null) {
-                content += line;
-            }
-        }
-        catch(IOException e) {
-        }
-
-        return content;
+        return getAsyncResults(url, null);
     }
 
     // Gets a JSON-document and a list of tags, extract content and creates xml
     // tags
-    private static String convertTags(String[][] regularExp, String content) {
+    private String convertTags(String[][] regularExp, String content) {
         String tags = "";
         for(int i = 0; i < regularExp.length; i++) {
             Matcher matcher = Pattern.compile(regularExp[i][0]).matcher(content);
@@ -72,15 +46,17 @@ public final class JSONParser {
 
     // Gets String with web content and returns a xml-document for an object
     // whose ID is in the content
-    public static String parseJSON(String webContent) {
+    public String parseJSON(String webContent) {
 
         String JSONID = getJSONFileID(webContent);
-        if(JSONID == null) // The page doesn't contain any ID's
+        if(JSONID == null) { // The page doesn't contain any ID's
             return null;
+        }
 
         String JSONFileContent = getJSONContent(JSONID);
-        if(JSONFileContent == null) // Did not get content with the ID
+        if(JSONFileContent == null) { // Did not get content with the ID
             return null;
+        }
 
         // Tags we want: titel, #chars to content, new tagname
         String[][] regularExp = {
@@ -99,4 +75,5 @@ public final class JSONParser {
                                                                          // XML-document
         return xmlDoc;
     }
+
 }
