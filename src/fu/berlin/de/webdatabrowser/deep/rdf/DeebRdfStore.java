@@ -2,6 +2,8 @@ package fu.berlin.de.webdatabrowser.deep.rdf;
 
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 /**
  * Interface fuer den RDFStore.
  * 
@@ -72,5 +74,13 @@ public interface DeebRdfStore {
      *             wenn eine ungueltige Anzahl an Parametern uebergeben wurde
      */
     public List<DeebResource> performQuery(String queryString, String... params) throws IllegalArgumentException;
+
+    /**
+     * Gibt das genutzte Model zurueck.
+     * 
+     * @return
+     *         Das genutzte Model.
+     */
+    public Model getModel();
 
 }

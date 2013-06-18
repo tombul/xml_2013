@@ -137,4 +137,9 @@ public class RdfStore implements DeebRdfStore {
         rdfModel = ModelFactory.createDefaultModel();
     }
 
+    @Override
+    public Model getModel() {
+        return rdfModel;
+    }
+
 }
