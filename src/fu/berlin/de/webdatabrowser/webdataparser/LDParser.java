@@ -1,5 +1,7 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,59 +9,105 @@ import java.util.Arrays;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
-public final class LDParser {
+import android.util.Log;
 
-    static ArrayList<String> tags = new ArrayList<String>( // befüllt mit ein
-                                                           // paar Tags die man
-                                                           // nehmen könnte
-                                  Arrays.asList("dbpedia-owl:populationTotal", // Einwohnerzahl
-                                          "dbpedia-owl:leader", // Bürgermeister
-                                          "geo:geometry", // Koordinaten
-                                                          // POINT(13.3989
-                                                          // 52.5006)
-                                          "dbpedia-owl:areaTotal", // Gesamtfläche
-                                                                   // (xsd:double)
-                                          "dbpedia-owl:birthPlace", // Geburtsort
-                                                                    // von...
-                                          "dbpedia-owl:headquarter", // Hauptquartier
-                                                                     // von...
-                                          "dbpedia-owl:hometown" // Heimatstadt
-                                                                 // von...
-                                  ));
+public class LDParser {
+    static ArrayList<String>    tags    = new ArrayList<String>(
+                                                // befuellt mit ein paar Tags
+                                                // die man
+                                                // nehmen koennte
+                                                Arrays.asList(
+                                                        // Einwohnerzahl
+                                                        "dbpedia-owl:populationTotal",
+                                                        // Buergermeister
+                                                        "dbpedia-owl:leader",
+                                                        // Koordinaten
+                                                        // POINT(13.3989,
+                                                        // 52.5006)
+                                                        "geo:geometry",
+                                                        // Gesamtflaeche
+                                                        // (xsd:double)
+                                                        "dbpedia-owl:areaTotal",
+                                                        // Geburtsort von...
+                                                        "dbpedia-owl:birthPlace",
+                                                        // Hauptquartier von...
+                                                        "dbpedia-owl:headquarter",
+                                                        // Heimatstadt von...
+                                                        "dbpedia-owl:hometown"
+                                                        ));
+    private static final String LOG_TAG = "LDParser";
+    private final WebDataParser resultHandler;
 
-    // Gibt dom document als string zurück
-    private static String getStringFromDoc(org.w3c.dom.Document doc) {
-        DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
-        LSSerializer lsSerializer = domImplementation.createLSSerializer();
-        return lsSerializer.writeToString(doc);
+    public LDParser(WebDataParser resultHandler) {
+        this.resultHandler = resultHandler;
     }
 
-    public static String parseLD(String webContent) throws ParserConfigurationException, SAXException, IOException {
+    // Gibt dom document als string zurueck
+    private String getStringFromDoc(org.w3c.dom.Document doc) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
+
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
+        }
+        catch(TransformerConfigurationException e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(TransformerFactoryConfigurationError e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(TransformerException e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        return outputStream.toString();
+    }
+
+    public void parseLD(String webContent) {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse(webContent);
+        DocumentBuilder db = null;
+        Document doc = null;
+
+        try {
+            db = dbf.newDocumentBuilder();
+            doc = db.parse(new ByteArrayInputStream(webContent.getBytes()));
+        }
+        catch(ParserConfigurationException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(SAXException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+        catch(IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
 
         NodeList rdfEntries = doc.getElementsByTagName("rdf:Description");
         Document targetDoc = db.newDocument();
-
         Element root = targetDoc.createElement("rdf:RDF");
         root.setAttribute("xmlns:rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        root.setAttribute("xmlns:dbpedia-owl", "http://dbpedia.org/ontology/");
-        root.setAttribute("xmlns:geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
+        root.setAttribute("xmlns:dbpedia-owl", "http://dbpedia.org/ontology/"); // TODO
+                                                                                // nötige
+                                                                                // namespaces
+                                                                                // noch
+                                                                                // unvollständig
         targetDoc.appendChild(root);
 
-        // Subjekte die die gewünschten Prädikate enthalten werden in ein neues
-        // Dokument verfrachtet
         for(int i = 0; i < rdfEntries.getLength(); i++) {
             Node subject = rdfEntries.item(i);
             if(subject.getNodeType() == Node.ELEMENT_NODE) {
@@ -99,8 +147,8 @@ public final class LDParser {
             }
         }
 
-        return LDParser.getStringFromDoc(targetDoc);
-
+        String result = getStringFromDoc(targetDoc);
+        resultHandler.onParsingResultAvailable(result);
     }
 
 }

@@ -24,8 +24,10 @@ public class Person extends DeebResource {
         super(identifier);
     }
 
-    private String givenName = "";
-    private String lastName  = "";
+    private String givenName  = "";
+    private String lastName   = "";
+    private City   birthPlace = null;
+    private City   homeTown   = null;
 
     public String getGivenName() {
         return givenName;

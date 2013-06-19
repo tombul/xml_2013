@@ -1,0 +1,77 @@
+/**
+ * 
+ */
+package fu.berlin.de.webdatabrowser.webdataparser;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+
+import android.content.Context;
+import android.util.Log;
+import fu.berlin.de.webdatabrowser.R;
+import fu.berlin.de.webdatabrowser.util.Debug;
+
+/**
+ * @author tom
+ * 
+ *         This class provides the necessary features for parsing embedded
+ *         microdata from stackoverflow.
+ * 
+ */
+public class MicrodataParser {
+    private static final String LOG_TAG = "MicrodataParser";
+    private final WebDataParser resultHandler;
+
+    public MicrodataParser(WebDataParser resultHandler) {
+        this.resultHandler = resultHandler;
+    }
+
+    public void parseMicroDataHtml(String source, String url, Context context) {
+        int microDataID = R.raw.stackoverflow_to_xml;
+        ByteArrayInputStream stream = null;
+
+        try {
+            Element itemscope = Jsoup.parse(source, url).getElementsByAttribute("itemscope").first();
+            String xmlSource = getXMLSource(itemscope);
+            Debug.writeFileToExternalStorage(xmlSource, "preXSLT.xml");
+            stream = new ByteArrayInputStream(xmlSource.getBytes("UTF-8"));
+            ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID);
+            Debug.writeFileToExternalStorage(out.toString(), "postXSLT.xml");
+            resultHandler.onParsingResultAvailable(out.toString("UTF-8"));
+            return;
+        }
+        catch(IOException e) {
+            Log.e(LOG_TAG, Log.getStackTraceString(e));
+        }
+
+        resultHandler.onParsingResultAvailable(null);
+    }
+
+    private String getXMLSource(Element htmlToParse) {
+        Element cleanHtml = cleanHtml(htmlToParse);
+        String xml = buildXML(cleanHtml);
+        return xml;
+    }
+
+    private Element cleanHtml(Element htmlToParse) {
+        htmlToParse.getElementsByTag("script").remove();
+        htmlToParse.getElementsByTag("input").remove();
+        htmlToParse.getElementsByTag("br").remove();
+        htmlToParse.getElementsByTag("form").remove();
+        htmlToParse.select("img").after("</img>");
+        // htmlToParse.getElementsByTag("img").remove();
+        return htmlToParse;
+    }
+
+    private String buildXML(Element cleanHtml) {
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+        String html = "<root xmlns=\"http://www.fu-berlin.de/deeb/WebBrowser\">" + cleanHtml.getElementById("question-header").outerHtml();
+        html = html.concat(cleanHtml.getElementById("mainbar").outerHtml());
+        String xml = xmlHeader.concat(html + "</root>");
+        return xml;
+    }
+}
