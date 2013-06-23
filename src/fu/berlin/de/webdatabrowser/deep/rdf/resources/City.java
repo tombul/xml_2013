@@ -10,10 +10,60 @@ import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 
 public class City extends DeebResource {
 
-    private double   populationTotal = 0;
-    private Person   leader          = null;
-    private Location location        = null;
-    private double   areaTotal       = 0;
+    private double       populationTotal = 0;
+    private Person       leader          = null;
+    private Location     location        = null;
+    private double       areaTotal       = 0;
+    private List<Person> birthPlace      = null;
+    private List<Person> hometown        = null;
+
+    public double getPopulationTotal() {
+        return populationTotal;
+    }
+
+    public void setPopulationTotal(double populationTotal) {
+        this.populationTotal = populationTotal;
+    }
+
+    public Person getLeader() {
+        return leader;
+    }
+
+    public void setLeader(Person leader) {
+        this.leader = leader;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public double getAreaTotal() {
+        return areaTotal;
+    }
+
+    public void setAreaTotal(double areaTotal) {
+        this.areaTotal = areaTotal;
+    }
+
+    public List<Person> getBirthPlace() {
+        return birthPlace;
+    }
+
+    public void setBirthPlace(List<Person> birthPlace) {
+        this.birthPlace = birthPlace;
+    }
+
+    public List<Person> getHometown() {
+        return hometown;
+    }
+
+    public void setHometown(List<Person> hometown) {
+        this.hometown = hometown;
+    }
 
     public City(String identifier) {
         super(identifier);

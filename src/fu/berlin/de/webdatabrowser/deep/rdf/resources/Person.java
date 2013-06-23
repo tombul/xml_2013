@@ -24,10 +24,11 @@ public class Person extends DeebResource {
         super(identifier);
     }
 
-    private String givenName  = "";
-    private String lastName   = "";
-    private City   birthPlace = null;
-    private City   homeTown   = null;
+    private String givenName = "";
+    private String lastName  = "";
+    private String url       = "";
+    private String image     = "";
+    private String award     = "";
 
     public String getGivenName() {
         return givenName;
@@ -49,6 +50,30 @@ public class Person extends DeebResource {
         if(getResource() != null) {
             getResource().addProperty(VCARD.NAME, lastName);
         }
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getAward() {
+        return award;
+    }
+
+    public void setAward(String award) {
+        this.award = award;
     }
 
     @Override

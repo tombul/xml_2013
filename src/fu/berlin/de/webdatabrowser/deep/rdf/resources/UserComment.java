@@ -8,38 +8,48 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 
-public class Location extends DeebResource {
+public class UserComment extends DeebResource {
 
-    private double alt;
-    private double lon;
-    private double lat;
+    private String  commentText;
+    private String  commentTime;
+    private Article discusses;
+    private Person  creator;
 
-    public double getAlt() {
-        return alt;
+    public String getCommentText() {
+        return commentText;
     }
 
-    public void setAlt(double alt) {
-        this.alt = alt;
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
     }
 
-    public double getLon() {
-        return lon;
+    public String getCommentTime() {
+        return commentTime;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setCommentTime(String commentTime) {
+        this.commentTime = commentTime;
     }
 
-    public double getLat() {
-        return lat;
+    public Article getDiscusses() {
+        return discusses;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setDiscusses(Article discusses) {
+        this.discusses = discusses;
     }
 
-    public Location(String identifier) {
+    public Person getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Person creator) {
+        this.creator = creator;
+    }
+
+    public UserComment(String identifier) {
         super(identifier);
+        // TODO Auto-generated constructor stub
     }
 
     @Override
