@@ -13,6 +13,7 @@ import org.jsoup.nodes.Element;
 import android.content.Context;
 import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
+import fu.berlin.de.webdatabrowser.util.Debug;
 
 /**
  * @author tom
@@ -21,47 +22,35 @@ import fu.berlin.de.webdatabrowser.R;
  *         microdata from stackoverflow.
  * 
  */
-public class MicrodataParser extends BasicParser {
+public class MicrodataParser {
     private static final String LOG_TAG = "MicrodataParser";
+    private final WebDataParser resultHandler;
 
-    public ByteArrayOutputStream parseMicroData(String source, String url, Context context) {
-        int microDataID = R.raw.stackoverflow_to_xml;
-        String agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36";
-        ByteArrayInputStream stream = null;
-        // String html = getAsyncResults(url, agent);
-        try {
-            Element feedLink = Jsoup.parse(source, url).getElementsByAttributeValue("rel", "alternate").first();
-            String xml = getAsyncResults(feedLink.absUrl("href"), agent);
-            // String xmlSource = getXMLSource(xml);
-            stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-            ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID);
-            writeToFile(out.toString(), "postXSLT");
-            return out;
-        }
-        catch(IOException e) {
-            Log.e(LOG_TAG, Log.getStackTraceString(e));
-        }
-        return null;
+    public MicrodataParser(WebDataParser resultHandler) {
+        this.resultHandler = resultHandler;
     }
 
-    public ByteArrayOutputStream parseMicroDataHtml(String source, String url, Context context) {
+    public void parseMicroDataHtml(String source, String url, Context context) {
         int microDataID = R.raw.stackoverflow_to_xml;
-        String agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.110 Safari/537.36";
         ByteArrayInputStream stream = null;
-        // String html = getAsyncResults(url, agent);
+
         try {
             Element itemscope = Jsoup.parse(source, url).getElementsByAttribute("itemscope").first();
             String xmlSource = getXMLSource(itemscope);
-            writeToFile(xmlSource, "preXSLT.xml");
+            Debug.writeFileToExternalStorage(xmlSource, "mdPreMDXSLT.xml");
+            Debug.logLongString(xmlSource);
             stream = new ByteArrayInputStream(xmlSource.getBytes("UTF-8"));
             ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID);
-            writeToFile(out.toString(), "postXSLT.xml");
-            return out;
+            Debug.writeFileToExternalStorage(out.toString(), "mdPreRDFXSLT.xml");
+            Debug.logLongString(out.toString());
+            resultHandler.onParsingResultAvailable(out.toString("UTF-8"));
+            return;
         }
         catch(IOException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
-        return null;
+
+        resultHandler.onParsingResultAvailable(null);
     }
 
     private String getXMLSource(Element htmlToParse) {
@@ -76,39 +65,16 @@ public class MicrodataParser extends BasicParser {
         htmlToParse.getElementsByTag("br").remove();
         htmlToParse.getElementsByTag("form").remove();
         htmlToParse.select("img").after("</img>");
+        htmlToParse.setBaseUri("http://www.stackoverflow.com");
         // htmlToParse.getElementsByTag("img").remove();
         return htmlToParse;
     }
 
     private String buildXML(Element cleanHtml) {
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String html = "<root xmlns=\"http://www.fu-berlin.de/deeb/WebBrowser\">" + cleanHtml.getElementById("question-header").outerHtml();
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        String html = "<creativeWork xmlns=\"http://www.fu-berlin.de/deeb/WebBrowser\">" + cleanHtml.getElementById("question-header").outerHtml();
         html = html.concat(cleanHtml.getElementById("mainbar").outerHtml());
-        String xml = xmlHeader.concat(html + "</root>");
-        ByteArrayOutputStream out = new ByteArrayOutputStream(32);
-        // try {
-        // XMLBuilder builder = XMLBuilder.parse(new InputSource(new
-        // ByteArrayInputStream(xml.getBytes("UTF-8"))));
-        // xml = builder.asString();
-        // xml = xmlHeader + xml;
-        // }
-        // catch(UnsupportedEncodingException e) {
-        // Log.e(LOG_TAG, Log.getStackTraceString(e));
-        // }
-        // catch(IOException e) {
-        // Log.e(LOG_TAG, Log.getStackTraceString(e));
-        // }
-        // catch(ParserConfigurationException e) {
-        // Log.e(LOG_TAG, Log.getStackTraceString(e));
-        // }
-        // catch(SAXException e) {
-        // Log.e(LOG_TAG, Log.getStackTraceString(e));
-        // }
-        // catch(TransformerException e) {
-        // Log.e(LOG_TAG, Log.getStackTraceString(e));
-        // }
-
+        String xml = xmlHeader.concat(html + "</creativeWork>");
         return xml;
     }
-
 }

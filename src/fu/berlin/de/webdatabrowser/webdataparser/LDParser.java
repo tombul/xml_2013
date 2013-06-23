@@ -24,6 +24,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.util.Log;
+import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class LDParser {
     static ArrayList<String>    tags    = new ArrayList<String>(
@@ -50,6 +51,11 @@ public class LDParser {
                                                         "dbpedia-owl:hometown"
                                                         ));
     private static final String LOG_TAG = "LDParser";
+    private final WebDataParser resultHandler;
+
+    public LDParser(WebDataParser resultHandler) {
+        this.resultHandler = resultHandler;
+    }
 
     // Gibt dom document als string zurueck
     private String getStringFromDoc(org.w3c.dom.Document doc) {
@@ -72,11 +78,12 @@ public class LDParser {
         return outputStream.toString();
     }
 
-    public String parseLD(String webContent) {
+    public void parseLD(String webContent) {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
         Document doc = null;
+
         try {
             db = dbf.newDocumentBuilder();
             doc = db.parse(new ByteArrayInputStream(webContent.getBytes()));
@@ -94,32 +101,59 @@ public class LDParser {
         NodeList rdfEntries = doc.getElementsByTagName("rdf:Description");
         Document targetDoc = db.newDocument();
         Element root = targetDoc.createElement("rdf:RDF");
+        root.setAttribute("xmlns:rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+        root.setAttribute("xmlns:dbpedia-owl", "http://dbpedia.org/ontology/"); // TODO
+                                                                                // n�tige
+                                                                                // namespaces
+                                                                                // noch
+                                                                                // unvollst�ndig
         targetDoc.appendChild(root);
 
-        boolean importNode;
-
         for(int i = 0; i < rdfEntries.getLength(); i++) {
-            Node node = rdfEntries.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
-                NodeList children = node.getChildNodes();
-                importNode = false;
-                Node copyOfN = targetDoc.importNode(node, false);
-                for(int j = 0; j < children.getLength(); j++) {
-                    Node cNode = children.item(j);
-                    for(String element : LDParser.tags) {
-                        if(cNode.getNodeName() == element) {
-                            copyOfN.appendChild(targetDoc.importNode(cNode, false));
-                            importNode = true;
+            Node subject = rdfEntries.item(i);
+            if(subject.getNodeType() == Node.ELEMENT_NODE) {
+
+                NodeList predicates = subject.getChildNodes();
+
+                boolean foundTag;
+                for(int j = predicates.getLength() - 1; j >= 0; j--) {
+
+                    Node predicate = predicates.item(j);
+                    foundTag = false;
+
+                    for(String element : tags) {
+                        if(predicate.getNodeName() == element) {
+                            foundTag = true;
                         }
                     }
+
+                    if(!foundTag)
+                        subject.removeChild(predicate); // l�scht predicate wenn
+                                                        // es nicht in der
+                                                        // Tagliste gefunden
+                                                        // wurde
                 }
-                if(importNode)
-                    targetDoc.getDocumentElement().appendChild(copyOfN);
+                if(subject.hasChildNodes())
+                    targetDoc.getDocumentElement().appendChild(targetDoc.adoptNode(subject)); // Subjekt
+                                                                                              // wird
+                                                                                              // nur
+                                                                                              // ins
+                                                                                              // neue
+                                                                                              // Doc
+                                                                                              // eingeh�ngt
+                                                                                              // wenn
+                                                                                              // es
+                                                                                              // Pr�dikate
+                                                                                              // hat
             }
         }
-        String result = getStringFromDoc(targetDoc);
 
-        return result;
+        Debug.writeFileToExternalStorage(webContent, "ldXMLPreLDXSLT.xml");
+        Debug.logLongString(webContent);
+        String result = getStringFromDoc(targetDoc);
+        Debug.writeFileToExternalStorage(result, "ldXMLPreRDFXSLT.xml");
+        Debug.logLongString(result);
+        resultHandler.onParsingResultAvailable(result);
     }
 
 }
