@@ -37,10 +37,12 @@ public class MicrodataParser {
         try {
             Element itemscope = Jsoup.parse(source, url).getElementsByAttribute("itemscope").first();
             String xmlSource = getXMLSource(itemscope);
-            Debug.writeFileToExternalStorage(xmlSource, "preXSLT.xml");
+            Debug.writeFileToExternalStorage(xmlSource, "mdPreMDXSLT.xml");
+            Debug.logLongString(xmlSource);
             stream = new ByteArrayInputStream(xmlSource.getBytes("UTF-8"));
             ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID);
-            Debug.writeFileToExternalStorage(out.toString(), "postXSLT.xml");
+            Debug.writeFileToExternalStorage(out.toString(), "mdPreRDFXSLT.xml");
+            Debug.logLongString(out.toString());
             resultHandler.onParsingResultAvailable(out.toString("UTF-8"));
             return;
         }
@@ -63,15 +65,16 @@ public class MicrodataParser {
         htmlToParse.getElementsByTag("br").remove();
         htmlToParse.getElementsByTag("form").remove();
         htmlToParse.select("img").after("</img>");
+        htmlToParse.setBaseUri("http://www.stackoverflow.com");
         // htmlToParse.getElementsByTag("img").remove();
         return htmlToParse;
     }
 
     private String buildXML(Element cleanHtml) {
-        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String html = "<root xmlns=\"http://www.fu-berlin.de/deeb/WebBrowser\">" + cleanHtml.getElementById("question-header").outerHtml();
+        String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        String html = "<creativeWork xmlns=\"http://www.fu-berlin.de/deeb/WebBrowser\">" + cleanHtml.getElementById("question-header").outerHtml();
         html = html.concat(cleanHtml.getElementById("mainbar").outerHtml());
-        String xml = xmlHeader.concat(html + "</root>");
+        String xml = xmlHeader.concat(html + "</creativeWork>");
         return xml;
     }
 }

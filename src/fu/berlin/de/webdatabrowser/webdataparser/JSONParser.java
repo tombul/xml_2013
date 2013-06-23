@@ -3,6 +3,7 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
 import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
 
@@ -88,7 +89,8 @@ public class JSONParser implements HttpResponseHandler {
         String xmlDoc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
                 + "<historicalObject>\n" + tags + "</historicalObject>"; // create
                                                                          // XML-document
-
+        Debug.writeFileToExternalStorage(xmlDoc, "jsonXMLPreRDFXSLT.xml");
+        Debug.logLongString(xmlDoc);
         resultHandler.onParsingResultAvailable(xmlDoc);
     }
 }

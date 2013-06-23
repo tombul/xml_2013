@@ -25,6 +25,7 @@ import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.ui.WebDataBrowserActivity;
+import fu.berlin.de.webdatabrowser.util.Debug;
 
 /**
  * This class provides methods to transform arbitrary web-data to XML-documents
@@ -121,7 +122,8 @@ public class WebDataParser {
         Log.d(LOG_TAG, "applying xml_to_rdfxml.xsl");
         ByteArrayOutputStream rdfXml = applyXSL(webDataBrowser,
                 new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml);
-
+        Debug.writeFileToExternalStorage(rdfXml.toString(), "postRDFXSLT.xml");
+        Debug.logLongString(rdfXml.toString());
         // TODO get resources from rdfXml
 
         // TODO return the data from this request (for visualization)

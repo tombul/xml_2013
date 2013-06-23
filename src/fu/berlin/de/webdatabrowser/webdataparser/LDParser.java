@@ -24,6 +24,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.util.Log;
+import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class LDParser {
     static ArrayList<String>    tags    = new ArrayList<String>(
@@ -102,10 +103,10 @@ public class LDParser {
         Element root = targetDoc.createElement("rdf:RDF");
         root.setAttribute("xmlns:rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
         root.setAttribute("xmlns:dbpedia-owl", "http://dbpedia.org/ontology/"); // TODO
-                                                                                // nötige
+                                                                                // nï¿½tige
                                                                                 // namespaces
                                                                                 // noch
-                                                                                // unvollständig
+                                                                                // unvollstï¿½ndig
         targetDoc.appendChild(root);
 
         for(int i = 0; i < rdfEntries.getLength(); i++) {
@@ -127,7 +128,7 @@ public class LDParser {
                     }
 
                     if(!foundTag)
-                        subject.removeChild(predicate); // löscht predicate wenn
+                        subject.removeChild(predicate); // lï¿½scht predicate wenn
                                                         // es nicht in der
                                                         // Tagliste gefunden
                                                         // wurde
@@ -139,15 +140,19 @@ public class LDParser {
                                                                                               // ins
                                                                                               // neue
                                                                                               // Doc
-                                                                                              // eingehängt
+                                                                                              // eingehï¿½ngt
                                                                                               // wenn
                                                                                               // es
-                                                                                              // Prädikate
+                                                                                              // Prï¿½dikate
                                                                                               // hat
             }
         }
 
+        Debug.writeFileToExternalStorage(webContent, "ldXMLPreLDXSLT.xml");
+        Debug.logLongString(webContent);
         String result = getStringFromDoc(targetDoc);
+        Debug.writeFileToExternalStorage(result, "ldXMLPreRDFXSLT.xml");
+        Debug.logLongString(result);
         resultHandler.onParsingResultAvailable(result);
     }
 
