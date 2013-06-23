@@ -4,7 +4,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
 
-public abstract class Vocabulary {
+public abstract class DeebVocabulary {
 
     protected static final Model getModel() {
         return RdfStore.getInstance().getModel();
