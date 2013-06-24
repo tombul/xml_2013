@@ -122,13 +122,14 @@ public class LDParser {
                     foundTag = false;
 
                     for(String element : tags) {
-                        if(predicate.getNodeName() == element) {
+                        if(predicate.getNodeName().equals(element)) {
                             foundTag = true;
                         }
                     }
 
                     if(!foundTag)
-                        subject.removeChild(predicate); // l�scht predicate wenn
+                        subject.removeChild(predicate); // l�scht predicate
+                                                        // wenn
                                                         // es nicht in der
                                                         // Tagliste gefunden
                                                         // wurde
