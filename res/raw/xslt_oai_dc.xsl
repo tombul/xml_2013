@@ -4,9 +4,13 @@
 	<xsl:output method="xml" indent="yes" />
 	
 	<xsl:template match="oai:OAI-PMH">
-		<deeb:publication xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:deeb="http://www.fu-berlin.de/deebWebBrowser/">
-			<xsl:apply-templates select="./oai:GetRecord/oai:record/oai:metadata/oai_dc:dc" />
-		</deeb:publication>
+		<deeb:publications>
+			<xsl:for-each select="./oai:ListRecords/oai:record/oai:metadata/oai_dc:dc">
+				<deeb:publication xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:deeb="http://www.fu-berlin.de/deebWebBrowser/">
+					<xsl:apply-templates select="." />
+				</deeb:publication>
+		    </xsl:for-each>
+	    </deeb:publications>
 	</xsl:template>
 	
     <xsl:template match="dc:title">

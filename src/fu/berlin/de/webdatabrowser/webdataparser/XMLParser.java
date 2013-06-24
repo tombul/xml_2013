@@ -24,8 +24,8 @@ public class XMLParser implements HttpResponseHandler {
 
     public void parseXML(String url) {
         String newUrl = url.replace("http://www.openarchives.org/Register/BrowseSites?viewRecord=", "");
-        newUrl = newUrl.concat("?verb=Identify");
-        new HttpRequestAsyncTask(this).execute(url);
+        newUrl = newUrl.concat("?verb=ListRecords&metadataPrefix=oai_dc");
+        new HttpRequestAsyncTask(this).execute(newUrl);
     }
 
     @Override
@@ -34,14 +34,14 @@ public class XMLParser implements HttpResponseHandler {
             Debug.writeFileToExternalStorage(source, "xmlPreXMLXSLT.xml");
             Debug.logLongString(source);
             ByteArrayOutputStream outputStream = WebDataParser.applyXSL(resultHandler.getContext(),
-                    new ByteArrayInputStream(source.getBytes()), R.raw.xslt_oai_dc);
+                    new ByteArrayInputStream(source.getBytes()), R.raw.xslt_oai_dc, true);
             String xmlDocument = outputStream.toString();
             Debug.writeFileToExternalStorage(xmlDocument, "xmlPreRDFXSLT.xml");
             Debug.logLongString(xmlDocument);
             resultHandler.onParsingResultAvailable(xmlDocument);
-            return;
         }
-
-        resultHandler.onParsingResultAvailable(null);
+        else {
+            resultHandler.onParsingResultAvailable(null);
+        }
     }
 }

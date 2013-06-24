@@ -32,8 +32,9 @@ import fu.berlin.de.webdatabrowser.util.Debug;
  * as well as to transfom XML-documents using XSL-stylesheets.
  */
 public class WebDataParser {
-    private static final String          LOG_TAG = "Parser";
+    private static final String          LOG_TAG            = "Parser";
     private final WebDataBrowserActivity webDataBrowser;
+    private static Boolean               namespaceAwareness = false;
 
     public WebDataParser(WebDataBrowserActivity webDataBrowser) {
         this.webDataBrowser = webDataBrowser;
@@ -52,7 +53,7 @@ public class WebDataParser {
             Log.d(LOG_TAG, "trying to parse json");
             new JSONParser(this).parseJSON(sourceCode);
         }
-        else if(url.contains("abe.tudelft.nl/index.php/faculty-architecture/oai")) {
+        else if(url.contains("abe.tudelft.nl/index.php/faculty-architecture/oai") || url.contains("http://www.openarchives.org/Register/BrowseSites?viewRecord=")) {
             Log.d(LOG_TAG, "trying to parse xml");
             new XMLParser(this).parseXML(url);
         }
@@ -78,11 +79,14 @@ public class WebDataParser {
      * @param xslID ID of a XSL-stylesheet
      * @return Outputstream of the transformed document
      */
-    public static ByteArrayOutputStream applyXSL(Context context, InputStream sourceInputStream, int xslID) {
+    public static ByteArrayOutputStream applyXSL(Context context, InputStream sourceInputStream, int xslID, Boolean namespaceAwareness) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
 
         try {
-            Document sourceDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(sourceInputStream);
+            WebDataParser.namespaceAwareness = namespaceAwareness;
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(WebDataParser.namespaceAwareness);
+            Document sourceDocument = dbf.newDocumentBuilder().parse(sourceInputStream);
             Source source = new DOMSource(sourceDocument);
             Transformer transformer = TransformerFactory.newInstance().newTransformer(
                     new StreamSource(context.getResources().openRawResource(xslID)));
@@ -121,7 +125,7 @@ public class WebDataParser {
         // apply XSL to receive RDFXML
         Log.d(LOG_TAG, "applying xml_to_rdfxml.xsl");
         ByteArrayOutputStream rdfXml = applyXSL(webDataBrowser,
-                new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml);
+                new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml, WebDataParser.namespaceAwareness);
         Debug.writeFileToExternalStorage(rdfXml.toString(), "postRDFXSLT.xml");
         Debug.logLongString(rdfXml.toString());
         // TODO get resources from rdfXml

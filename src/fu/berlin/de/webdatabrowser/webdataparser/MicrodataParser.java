@@ -40,17 +40,17 @@ public class MicrodataParser {
             Debug.writeFileToExternalStorage(xmlSource, "mdPreMDXSLT.xml");
             Debug.logLongString(xmlSource);
             stream = new ByteArrayInputStream(xmlSource.getBytes("UTF-8"));
-            ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID);
+            ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID, false);
             Debug.writeFileToExternalStorage(out.toString(), "mdPreRDFXSLT.xml");
             Debug.logLongString(out.toString());
             resultHandler.onParsingResultAvailable(out.toString("UTF-8"));
-            return;
         }
         catch(IOException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));
         }
-
-        resultHandler.onParsingResultAvailable(null);
+        if(stream == null) {
+            resultHandler.onParsingResultAvailable(null);
+        }
     }
 
     private String getXMLSource(Element htmlToParse) {
@@ -65,8 +65,6 @@ public class MicrodataParser {
         htmlToParse.getElementsByTag("br").remove();
         htmlToParse.getElementsByTag("form").remove();
         htmlToParse.select("img").after("</img>");
-        htmlToParse.setBaseUri("http://www.stackoverflow.com");
-        // htmlToParse.getElementsByTag("img").remove();
         return htmlToParse;
     }
 
