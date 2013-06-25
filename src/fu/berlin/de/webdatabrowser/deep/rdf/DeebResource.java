@@ -6,6 +6,16 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Article;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.City;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Location;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Publication;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Review;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.UserComment;
+import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
+
 /**
  * Abstrakte Klasse, welche eine {@link http
  * ://jena.apache.org/documentation/javadoc
@@ -19,6 +29,41 @@ import com.hp.hpl.jena.rdf.model.Statement;
  * 
  */
 public abstract class DeebResource {
+
+    public enum DeebPropertyType {
+
+        ARTICLE("Article"),
+        CITY("City"),
+        HISTORICAL_OBJECT("Historical Object"),
+        LOCATION("Location"),
+        PERSON("Person"),
+        PUBLICATION("Publication"),
+        REVIEW("Review"),
+        USER_COMMENT("User Comment");
+
+        private final String text;
+
+        private DeebPropertyType(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+
+        public static DeebPropertyType fromString(String text) {
+            if(text != null) {
+                for(DeebPropertyType b : DeebPropertyType.values()) {
+                    if(text.equalsIgnoreCase(b.text)) {
+                        return b;
+                    }
+                }
+            }
+            throw new IllegalArgumentException();
+        }
+
+    }
 
     private Resource resource;
     private String   identifier;
@@ -88,7 +133,7 @@ public abstract class DeebResource {
      *            die Resource, die gekapselt werden soll
      * @return die gewuenschte Resource
      */
-    public abstract DeebResource fromResource(Resource resource);
+    protected abstract DeebResource fromResource(Resource resource);
 
     /**
      * Speichert die Deeb-Resource im angegebenen Modell. Dabei muss ein neues
@@ -104,4 +149,46 @@ public abstract class DeebResource {
      * @return Html to display
      */
     public abstract String getHtml();
+
+    /**
+     * Erzeugt ein neues DeebResource-Objekt aus einem Resource-Objekt.
+     * 
+     * @param resource
+     *            die Resource, die gekapselt werden soll
+     * @return die gewuenschte Resource
+     */
+    public static DeebResource createResource(Resource resource) {
+        String identifier = resource.getURI();
+        DeebPropertyType propertyType = DeebPropertyType.fromString(resource.getProperty(Deeb.ResourceType).getString());
+        DeebResource result = null;
+        switch(propertyType) {
+            case ARTICLE:
+                result = new Article(identifier);
+                break;
+            case CITY:
+                result = new City(identifier);
+                break;
+            case HISTORICAL_OBJECT:
+                result = new HistoricalObject(identifier);
+                break;
+            case LOCATION:
+                result = new Location(identifier);
+                break;
+            case PERSON:
+                result = new Person(identifier);
+                break;
+            case PUBLICATION:
+                result = new Publication(identifier);
+                break;
+            case REVIEW:
+                result = new Review(identifier);
+                break;
+            case USER_COMMENT:
+                result = new UserComment(identifier);
+                break;
+            default:
+                break;
+        }
+        return result.fromResource(resource);
+    }
 }

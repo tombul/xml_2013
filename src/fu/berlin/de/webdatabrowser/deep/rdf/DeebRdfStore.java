@@ -65,15 +65,12 @@ public interface DeebRdfStore {
      *            sondern mittels Fragezeichen als Platzhalter versehen werden.
      *            Die Variablen
      *            werden dann mit params uebergeben.
-     * @param params
-     *            Die Werte der Variablen, mit denen die Platzhalter im
-     *            Querystring aufgefuellt werden.
+     * @param Liste von Platzhaltern, für die die Resource abgefragt werden
+     *            sollen.
      * @return
      *         Liste der Resourcen, die gefunden wurden
-     * @throws IllegalArgumentException
-     *             wenn eine ungueltige Anzahl an Parametern uebergeben wurde
      */
-    public List<DeebResource> performQuery(String queryString, String... params) throws IllegalArgumentException;
+    public List<DeebResource> performQuery(String queryString, String... params);
 
     /**
      * Gibt das genutzte Model zurueck.

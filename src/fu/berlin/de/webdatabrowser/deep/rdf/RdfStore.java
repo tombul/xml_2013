@@ -22,22 +22,23 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 
-import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
+import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 
 /**
  * Implementierung eines RDFStores
  * 
  * @author Jan-Christopher Pien
- *         27.05.2013
+ * @since 27.05.2013
+ * 
  * 
  */
 public class RdfStore implements DeebRdfStore {
 
-    private static RdfStore instance;
+    private static RdfStore     instance;
 
-    private Model           rdfModel;
+    private Model               rdfModel;
 
-    private final String    XML_NAME = "rdfStore.xml";
+    private static final String XML_NAME = "rdfStore.xml";
 
     public static synchronized RdfStore getInstance() {
         return(instance == null ? new RdfStore() : instance);
@@ -62,12 +63,13 @@ public class RdfStore implements DeebRdfStore {
             ResultSet results = execution.execSelect();
             for(; results.hasNext();) {
                 QuerySolution solution = results.nextSolution();
-                Resource solResource = solution.getResource(params[0]);
-                // TODO: Typ der Resource herausfinden (durch eigene Property)
-                // zunächst einmal nur Persons akzeptieren
-                Person result = new Person(solResource.getURI());
-                result.fromResource(solResource);
-                resources.add(result);
+                for(String param : params) {
+                    Resource solResource = solution.getResource(param);
+                    if(solResource.getProperty(Deeb.ResourceType) != null) {
+                        DeebResource result = DeebResource.createResource(solResource);
+                        resources.add(result);
+                    }
+                }
             }
         }
         finally {
