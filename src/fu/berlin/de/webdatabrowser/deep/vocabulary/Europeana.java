@@ -2,7 +2,7 @@ package fu.berlin.de.webdatabrowser.deep.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.Property;
 
-public class Europeana extends DeebVocabulary {
+public final class Europeana extends DeebVocabulary {
 
     private static final String NS = "http://www.europeana.eu/schemas/ese/";
 

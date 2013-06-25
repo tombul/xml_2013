@@ -2,7 +2,7 @@ package fu.berlin.de.webdatabrowser.deep.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.Property;
 
-public class DBPediaOwl extends DeebVocabulary {
+public final class DBPediaOwl extends DeebVocabulary {
 
     private static final String NS = "http://dbpedia.org/ontology/";
 

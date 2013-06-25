@@ -8,7 +8,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  * @author Jan-Christopher
  * 
  */
-public class Schema extends DeebVocabulary {
+public final class Schema extends DeebVocabulary {
 
     private static final String NS = "http://Schema.org/";
 
