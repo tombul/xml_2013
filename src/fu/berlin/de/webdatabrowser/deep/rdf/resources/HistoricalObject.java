@@ -112,4 +112,10 @@ public class HistoricalObject extends DeebResource {
 
     }
 
+    @Override
+    public String getHtml() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

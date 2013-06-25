@@ -76,4 +76,10 @@ public class UserComment extends DeebResource {
 
     }
 
+    @Override
+    public String getHtml() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

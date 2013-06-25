@@ -125,4 +125,10 @@ public class Publication extends DeebResource {
             resource.addProperty(DC.subject, subject);
         }
     }
+
+    @Override
+    public String getHtml() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

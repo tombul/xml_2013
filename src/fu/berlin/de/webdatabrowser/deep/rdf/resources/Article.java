@@ -113,4 +113,10 @@ public class Article extends DeebResource {
 
     }
 
+    @Override
+    public String getHtml() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

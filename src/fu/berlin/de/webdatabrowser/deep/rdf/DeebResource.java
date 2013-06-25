@@ -34,7 +34,7 @@ public abstract class DeebResource {
      * gekapselt wird. Diese Resource wird im eigentlichen Tripelstore
      * gespeichert und beinhaltet neben den eigentlichen Properties noch die
      * Eigenschaft, um welche Art von DeebResource es sich handelt, um das
-     * Objekt spaeter rekonstruieren zu können.
+     * Objekt spaeter rekonstruieren zu kï¿½nnen.
      * 
      * @return die gekapselte Resource
      */
@@ -100,4 +100,8 @@ public abstract class DeebResource {
      */
     public abstract void saveInModel(Model model);
 
+    /**
+     * @return Html to display
+     */
+    public abstract String getHtml();
 }

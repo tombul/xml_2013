@@ -115,4 +115,10 @@ public class Person extends DeebResource {
         resource.addProperty(VCARD.NAME, getLastName());
     }
 
+    @Override
+    public String getHtml() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
