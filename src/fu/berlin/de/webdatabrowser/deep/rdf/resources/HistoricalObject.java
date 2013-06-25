@@ -16,7 +16,7 @@ import fu.berlin.de.webdatabrowser.deep.vocabulary.Europeana;
 public class HistoricalObject extends DeebResource {
 
     private String                        title;
-    private List<String>                  type;
+    private String                        type;
     private String                        description;
     private String                        language;
     private String                        country;
@@ -38,16 +38,15 @@ public class HistoricalObject extends DeebResource {
         }
     }
 
-    public List<String> getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(List<String> type) {
+    public void setType(String type) {
         this.type = type;
         if(getResource() != null) {
             getResource().removeAll(DC.type);
-            for(String typeString : type)
-                getResource().addProperty(DC.type, typeString);
+            getResource().addProperty(DC.type, type);
         }
     }
 
@@ -127,6 +126,18 @@ public class HistoricalObject extends DeebResource {
         super(identifier);
     }
 
+    public HistoricalObject(String identifier, String title, String type, String description, String language, String country, String uri, String provider, String preview) {
+        super(identifier);
+        this.title = title;
+        this.type = type;
+        this.description = description;
+        this.language = language;
+        this.country = country;
+        this.uri = uri;
+        this.provider = provider;
+        this.preview = preview;
+    }
+
     @Override
     public List<Statement> getStatements() {
         // TODO Auto-generated method stub
@@ -176,9 +187,9 @@ public class HistoricalObject extends DeebResource {
         if(getTitle() != null)
             resource.addProperty(DC.title, getTitle());
         if(getType() != null) {
-            for(String type : getType()) {
-                resource.addProperty(DC.type, type);
-            }
+
+            resource.addProperty(DC.type, type);
+
         }
         if(getDescription() != null)
             resource.addProperty(DC.description, getDescription());
@@ -210,12 +221,10 @@ public class HistoricalObject extends DeebResource {
         html += "</strong></td></tr>";
 
         // Preview
-        String imgLink = preview;
-        if(imgLink != null) {
-            html += "</tr><tr><td>";
-            html += imgLink;
-            html += "\" style=\"width:100%\"/></td></tr>";
-        }
+        html += "<tr><td><img src=\"";
+        preview = preview.substring(40);
+        html += preview;
+        html += "\" style=\"width:100%\"/></td></tr>";
 
         // Type
         html += "<tr><td style=\"padding:4px; background-color" +

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
 import fu.berlin.de.webdatabrowser.ui.WebDataBrowserActivity;
 import fu.berlin.de.webdatabrowser.util.Debug;
 
@@ -128,6 +129,11 @@ public class WebDataParser {
                 new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml, WebDataParser.namespaceAwareness);
         Debug.writeFileToExternalStorage(rdfXml.toString(), "postRDFXSLT.xml");
         Debug.logLongString(rdfXml.toString());
+
+        if(xmlDocument.contains("<historicalObject>")) {
+            HistoricalObject object = JSONParser.getObject();
+            resources.add(object);
+        }
         // TODO get resources from rdfXml
 
         // TODO return the data from this request (for visualization)

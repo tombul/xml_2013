@@ -3,12 +3,14 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
 import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
 import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
 
 public class JSONParser implements HttpResponseHandler {
     private final WebDataParser resultHandler;
+    static String[]             values = new String[8];
 
     public JSONParser(WebDataParser resultHandler) {
         this.resultHandler = resultHandler;
@@ -32,6 +34,7 @@ public class JSONParser implements HttpResponseHandler {
     // Gets a JSON-document and a list of tags, extract content and creates xml
     // tags
     private String convertTags(String[][] regularExp, String content) {
+        // HistoricalObject object = new HistoricalObject(identifier)
         String tags = "";
 
         for(int i = 0; i < regularExp.length; i++) {
@@ -45,7 +48,7 @@ public class JSONParser implements HttpResponseHandler {
                     value += String.valueOf(content.charAt(pos));
                     pos++;
                 }
-
+                values[i] = value;
                 tags += "\t<" + regularExp[i][2] + ">" + value.replace("&", "&amp;") + "</" + regularExp[i][2] + ">\n";
             }
         }
@@ -87,10 +90,15 @@ public class JSONParser implements HttpResponseHandler {
 
         String tags = convertTags(regularExp, source); // create tags
         String xmlDoc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                + "<historicalObject>\n" + tags + "</historicalObject>"; // create
-                                                                         // XML-document
+                + "<historicalObject>\n" + tags + "</historicalObject>";
+
         Debug.writeFileToExternalStorage(xmlDoc, "jsonXMLPreRDFXSLT.xml");
         Debug.logLongString(xmlDoc);
         resultHandler.onParsingResultAvailable(xmlDoc);
+    }
+
+    public static HistoricalObject getObject() {
+        HistoricalObject object = new HistoricalObject(values[6], values[0], values[1], values[3], values[4], values[5], values[6], values[7], values[2]);
+        return object;
     }
 }
