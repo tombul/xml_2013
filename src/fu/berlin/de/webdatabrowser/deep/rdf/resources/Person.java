@@ -9,6 +9,8 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
+import fu.berlin.de.webdatabrowser.deep.vocabulary.Schema;
 
 /**
  * Beispielhafte Implementierung einer {@link DeebResource} am Beispiel einer
@@ -24,11 +26,13 @@ public class Person extends DeebResource {
         super(identifier);
     }
 
-    private String givenName = "";
-    private String lastName  = "";
-    private String url       = "";
-    private String image     = "";
-    private String award     = "";
+    private String                        givenName;
+    private String                        lastName;
+    private String                        url;
+    private String                        image;
+    private String                        award;
+
+    private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.PERSON;
 
     public String getGivenName() {
         return givenName;
@@ -58,6 +62,9 @@ public class Person extends DeebResource {
 
     public void setUrl(String url) {
         this.url = url;
+        if(getResource() != null) {
+            getResource().addProperty(Schema.URL, url);
+        }
     }
 
     public String getImage() {
@@ -66,6 +73,9 @@ public class Person extends DeebResource {
 
     public void setImage(String image) {
         this.image = image;
+        if(getResource() != null) {
+            getResource().addProperty(Schema.image, image);
+        }
     }
 
     public String getAward() {
@@ -74,6 +84,9 @@ public class Person extends DeebResource {
 
     public void setAward(String award) {
         this.award = award;
+        if(getResource() != null) {
+            getResource().addProperty(Schema.award, award);
+        }
     }
 
     @Override
@@ -98,11 +111,16 @@ public class Person extends DeebResource {
     public DeebResource fromResource(Resource resource) {
         setResource(resource);
 
-        String givenName = resource.getProperty(VCARD.Given).getString();
-        String lastName = resource.getProperty(VCARD.NAME).getString();
-
-        this.givenName = givenName;
-        this.lastName = lastName;
+        if(resource.getProperty(VCARD.Given) != null)
+            this.givenName = resource.getProperty(VCARD.Given).getString();
+        if(resource.getProperty(VCARD.NAME) != null)
+            this.lastName = resource.getProperty(VCARD.NAME).getString();
+        if(resource.getProperty(Schema.URL) != null)
+            this.url = resource.getProperty(Schema.URL).getString();
+        if(resource.getProperty(Schema.image) != null)
+            this.image = resource.getProperty(Schema.image).getString();
+        if(resource.getProperty(Schema.award) != null)
+            this.award = resource.getProperty(Schema.award).getString();
 
         return this;
     }
@@ -110,9 +128,20 @@ public class Person extends DeebResource {
     @Override
     public void saveInModel(Model model) {
         Resource resource = model.createResource(getIdentifier());
+        model.remove(resource.listProperties());
+        setResource(resource);
 
-        resource.addProperty(VCARD.Given, getGivenName());
-        resource.addProperty(VCARD.NAME, getLastName());
+        if(getGivenName() != null)
+            resource.addProperty(VCARD.Given, getGivenName());
+        if(getLastName() != null)
+            resource.addProperty(VCARD.NAME, getLastName());
+        if(getUrl() != null)
+            resource.addProperty(Schema.URL, getUrl());
+        if(getImage() != null)
+            resource.addProperty(Schema.image, getImage());
+        if(getAward() != null)
+            resource.addProperty(Schema.award, getAward());
+        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override

@@ -7,12 +7,16 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
+import fu.berlin.de.webdatabrowser.deep.vocabulary.Pos;
 
 public class Location extends DeebResource {
 
-    private double alt;
-    private double lon;
-    private double lat;
+    private double                        alt;
+    private double                        lon;
+    private double                        lat;
+
+    private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.LOCATION;
 
     public double getAlt() {
         return alt;
@@ -20,6 +24,10 @@ public class Location extends DeebResource {
 
     public void setAlt(double alt) {
         this.alt = alt;
+        if(getResource() != null) {
+            getResource().removeAll(Pos.alt);
+            getResource().addLiteral(Pos.alt, alt);
+        }
     }
 
     public double getLon() {
@@ -28,6 +36,10 @@ public class Location extends DeebResource {
 
     public void setLon(double lon) {
         this.lon = lon;
+        if(getResource() != null) {
+            getResource().removeAll(Pos.long_);
+            getResource().addLiteral(Pos.long_, lon);
+        }
     }
 
     public double getLat() {
@@ -36,6 +48,10 @@ public class Location extends DeebResource {
 
     public void setLat(double lat) {
         this.lat = lat;
+        if(getResource() != null) {
+            getResource().removeAll(Pos.lat);
+            getResource().addLiteral(Pos.lat, lat);
+        }
     }
 
     public Location(String identifier) {
@@ -56,14 +72,32 @@ public class Location extends DeebResource {
 
     @Override
     public DeebResource fromResource(Resource resource) {
-        // TODO Auto-generated method stub
-        return null;
+        setResource(resource);
+
+        if(resource.getProperty(Pos.alt) != null)
+            this.alt = resource.getProperty(Pos.alt).getDouble();
+        if(resource.getProperty(Pos.lat) != null)
+            this.lat = resource.getProperty(Pos.lat).getDouble();
+        if(resource.getProperty(Pos.long_) != null)
+            this.lon = resource.getProperty(Pos.long_).getDouble();
+
+        return this;
     }
 
     @Override
     public void saveInModel(Model model) {
-        // TODO Auto-generated method stub
+        Resource resource = model.createResource(getIdentifier());
+        model.remove(resource.listProperties());
+        setResource(resource);
 
+        if(getLon() != 0)
+            resource.addLiteral(Pos.long_, getLon());
+        if(getLat() != 0)
+            resource.addLiteral(Pos.lat, getLat());
+        if(getAlt() != 0)
+            resource.addLiteral(Pos.alt, getAlt());
+
+        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override
