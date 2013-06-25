@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.deep.rdf.resources;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -197,8 +198,71 @@ public class HistoricalObject extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-        return null;
+        // Table BEGIN
+        String html = "<table style=\"width:100%px; font-size:1.3em;" +
+                "border-collapse:collapse;\">";
+
+        // Title
+        html += "<tr><td style=\"text-align:" +
+                "center; background-color:#FF9; padding:2px 0 2px 0; " +
+                "font-size:1.7em\"><strong>";
+        html += title;
+        html += "</strong></td></tr>";
+
+        // Preview
+        String imgLink = preview;
+        if(imgLink != null) {
+            html += "</tr><tr><td>";
+            html += imgLink;
+            html += "\" style=\"width:100%\"/></td></tr>";
+        }
+
+        // Type
+        html += "<tr><td style=\"padding:4px; background-color" +
+                ":#FAF7BA;\"><strong>Typ: </strong>";
+        html += type;
+        html += "</td></tr>";
+
+        // Description
+        html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Beschreibung:</strong><br />";
+        html += description;
+        html += "</td></tr>";
+
+        // Country
+        html += "<tr><td style=\"background-color:#FAF7BA; padding:4px" +
+                ";\"><strong>Land: </strong>";
+        html += country;
+        html += "</td></tr>";
+
+        // Language
+        html += "<tr><td style=\"padding:4px; background-color:#FFC;\"" +
+                "><strong>Sprache: </strong>";
+        html += language;
+        html += "</td></tr>";
+
+        // URL
+        html += "<tr><td style=\"width:300px; word-break:break-all;" +
+                "word-wrap:break-word; background-color:#FAF7BA;" +
+                "padding:4px;\"><strong>URL:<br /></strong><a href=\"";
+        html += uri;
+        html += "\" style=\"text-decoration:none; color:black; font-" +
+                "style:italic;\">";
+        html += URLDecoder.decode(uri);
+
+        html += "</a></td></tr>";
+
+        // Provider
+        html += "<tr><td style=\"padding:4px; background-color:#FFC;\"" +
+                "><strong>Anbieter: </strong><br />";
+        html += provider;
+        html += "</td></tr>";
+
+        // Table END
+        html += "</table>";
+
+        return html;
     }
 
 }
