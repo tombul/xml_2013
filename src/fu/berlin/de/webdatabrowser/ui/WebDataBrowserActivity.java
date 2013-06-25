@@ -53,18 +53,18 @@ public class WebDataBrowserActivity extends Activity implements HttpResponseHand
     }
 
     public void onParsingResultAvailable(List<DeebResource> resources) {
-        String source = "";
+        String source = "<!DOCTYPE html><html>";
 
         if(resources.isEmpty()) {
-            source = "<!DOCTYPE html><html>Nothing useful found.</html>";
+            source = "Nothing useful found.";
         }
 
         for(DeebResource resource : resources) {
             RdfStore.getInstance().addResource(resource);
+            source += resource.getHtml() + "<p/>";
         }
 
-        // TODO Get HTML-visualization for the resultset
-
+        source += "</html>";
         webView.loadDataWithBaseURL(null, source, "text/html", "UTF-8", null);
     }
 
