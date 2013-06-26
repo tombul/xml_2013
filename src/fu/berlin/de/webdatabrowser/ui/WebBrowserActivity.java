@@ -91,9 +91,9 @@ public class WebBrowserActivity extends Activity {
         // HACK to avoid writing a full new adapter-class (due to lazynes), the
         // unwanted text of the spinner has been made invisible and button /
         // spinner have fixed dimensions
-        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, PRESET_URLS);
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_textview, PRESET_URLS);
         final Spinner spinner = (Spinner) findViewById(R.id.webbrowser_controls_spinner);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
