@@ -6,6 +6,7 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -13,6 +14,7 @@ import org.jsoup.nodes.Element;
 import android.content.Context;
 import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
+import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.util.Debug;
 
 /**
@@ -43,7 +45,10 @@ public class MicrodataParser {
             ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID, false);
             Debug.writeFileToExternalStorage(out.toString(), "mdPreRDFXSLT.xml");
             Debug.logLongString(out.toString());
-            resultHandler.onParsingResultAvailable(out.toString("UTF-8"));
+
+            // TODO Generate Ressources
+            LinkedList<DeebResource> objects = new LinkedList<DeebResource>();
+            resultHandler.onParsingResultAvailable(objects);
         }
         catch(IOException e) {
             Log.e(LOG_TAG, Log.getStackTraceString(e));

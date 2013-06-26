@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +25,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import android.util.Log;
+import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class LDParser {
@@ -154,7 +156,10 @@ public class LDParser {
         String result = getStringFromDoc(targetDoc);
         Debug.writeFileToExternalStorage(result, "ldXMLPreRDFXSLT.xml");
         Debug.logLongString(result);
-        resultHandler.onParsingResultAvailable(result);
+
+        // TODO Generate Ressources
+        LinkedList<DeebResource> objects = new LinkedList<DeebResource>();
+        resultHandler.onParsingResultAvailable(objects);
     }
 
 }

@@ -5,8 +5,10 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.LinkedList;
 
 import fu.berlin.de.webdatabrowser.R;
+import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
 import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
@@ -38,7 +40,10 @@ public class XMLParser implements HttpResponseHandler {
             String xmlDocument = outputStream.toString();
             Debug.writeFileToExternalStorage(xmlDocument, "xmlPreRDFXSLT.xml");
             Debug.logLongString(xmlDocument);
-            resultHandler.onParsingResultAvailable(xmlDocument);
+
+            // TODO Generate Ressources
+            LinkedList<DeebResource> objects = new LinkedList<DeebResource>();
+            resultHandler.onParsingResultAvailable(objects);
         }
         else {
             resultHandler.onParsingResultAvailable(null);

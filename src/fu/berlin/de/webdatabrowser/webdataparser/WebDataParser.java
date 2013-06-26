@@ -1,10 +1,10 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,11 +22,8 @@ import org.xml.sax.SAXParseException;
 
 import android.content.Context;
 import android.util.Log;
-import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
 import fu.berlin.de.webdatabrowser.ui.WebDataBrowserActivity;
-import fu.berlin.de.webdatabrowser.util.Debug;
 
 /**
  * This class provides methods to transform arbitrary web-data to XML-documents
@@ -114,29 +111,13 @@ public class WebDataParser {
         return outputStream;
     }
 
-    public void onParsingResultAvailable(String xmlDocument) {
-        LinkedList<DeebResource> resources = new LinkedList<DeebResource>();
-
-        if(xmlDocument == null) {
+    public void onParsingResultAvailable(List<DeebResource> resources) {
+        if(resources == null) {
             Log.w(LOG_TAG, "nothing could be parsed");
-            webDataBrowser.onParsingResultAvailable(resources);
+            webDataBrowser.onParsingResultAvailable(new LinkedList<DeebResource>());
             return;
         }
 
-        // apply XSL to receive RDFXML
-        Log.d(LOG_TAG, "applying xml_to_rdfxml.xsl");
-        ByteArrayOutputStream rdfXml = applyXSL(webDataBrowser,
-                new ByteArrayInputStream(xmlDocument.getBytes()), R.raw.xml_to_rdfxml, WebDataParser.namespaceAwareness);
-        Debug.writeFileToExternalStorage(rdfXml.toString(), "postRDFXSLT.xml");
-        Debug.logLongString(rdfXml.toString());
-
-        if(xmlDocument.contains("<historicalObject>")) {
-            HistoricalObject object = JSONParser.getObject();
-            resources.add(object);
-        }
-        // TODO get resources from rdfXml
-
-        // TODO return the data from this request (for visualization)
         webDataBrowser.onParsingResultAvailable(resources);
     }
 

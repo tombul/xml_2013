@@ -1,8 +1,10 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
 import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
@@ -94,11 +96,11 @@ public class JSONParser implements HttpResponseHandler {
 
         Debug.writeFileToExternalStorage(xmlDoc, "jsonXMLPreRDFXSLT.xml");
         Debug.logLongString(xmlDoc);
-        resultHandler.onParsingResultAvailable(xmlDoc);
-    }
 
-    public static HistoricalObject getObject() {
-        HistoricalObject object = new HistoricalObject(values[6], values[0], values[1], values[3], values[4], values[5], values[6], values[7], values[2]);
-        return object;
+        LinkedList<DeebResource> objects = new LinkedList<DeebResource>();
+        HistoricalObject object = new HistoricalObject(values[6], values[0], values[1], values[3], values[4],
+                values[5], values[6], values[7], values[2]);
+        objects.add(object);
+        resultHandler.onParsingResultAvailable(objects);
     }
 }
