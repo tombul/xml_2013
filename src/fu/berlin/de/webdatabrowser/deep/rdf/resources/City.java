@@ -13,6 +13,7 @@ import fu.berlin.de.webdatabrowser.deep.vocabulary.Pos;
 
 public class City extends DeebResource {
 
+    private String                        name;
     private double                        populationTotal;
     private Person                        leader;
     private Location                      location;
@@ -169,8 +170,94 @@ public class City extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-        return null;
+        // Table BEGIN
+        String html = "<table style=\"width:100%px; font-size:1.3em;" +
+                "border-collapse:collapse;\">";
+
+        // Title
+        html += "<tr><td style=\"text-align:" +
+                "center; background-color:#FF9; padding:2px 0 2px 0; " +
+                "font-size:1.7em\"><strong>";
+        html += name; // TODO add name attribute to city
+        html += "</strong></td></tr>";
+
+        // Bürgermeister
+        html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Bürgermeister:</strong><br />";
+        html += leader.getGivenName() + " " + leader.getLastName();
+        html += "</td></tr>";
+        // Einwohnerzahl
+        html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Einwohnerzahl:</strong><br />";
+        html += String.valueOf(populationTotal);
+        html += "</td></tr>";
+        // Gesamtfläche
+        html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Gesamtfläche:</strong><br />";
+        html += String.valueOf(areaTotal);
+        html += "</td></tr>";
+        // Standort
+        html += location.getHtml();
+        // Geburtsort von
+        html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Geburtsort von:</strong><br />";
+        html += "</td></tr>";
+        int i = 0;
+        for(Person person : birthPlace) {
+            html += person.getHtml();
+            i++;
+            if(i > 50)
+                break;
+        }
+
+        // Heimatort von
+        html += "<tr><td style=\"background-color:#FCC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Heimatstadt von:</strong><br />";
+        html += "</td></tr>";
+        i = 0;
+        for(Person person : hometown) {
+            html += person.getHtml();
+            i++;
+            if(i > 50)
+                break;
+        }
+        // Description
+        // html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
+        // "word-break:break-all; word-wrap:break-word;\"><strong>" +
+        // "Beschreibung:</strong><br />";
+        // html += description;
+        // html += "</td></tr>";
+        //
+        // // Country
+        // html += "<tr><td style=\"background-color:#FAF7BA; padding:4px" +
+        // ";\"><strong>Land: </strong>";
+        // html += country;
+        // html += "</td></tr>";
+        //
+        // // Language
+        // html += "<tr><td style=\"padding:4px; background-color:#FFC;\"" +
+        // "><strong>Sprache: </strong>";
+        // html += language;
+        // html += "</td></tr>";
+        //
+        //
+
+        // Table END
+        html += "</table>";
+        return html;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

@@ -103,7 +103,14 @@ public class Location extends DeebResource {
     @Override
     public String getHtml() {
         // TODO Auto-generated method stub
-        return null;
+
+        String html = "<tr><td style=\"background-color:#FFC; padding:4px;" +
+                "word-break:break-all; word-wrap:break-word;\"><strong>" +
+                "Standort:</strong><br />";
+        html += "lat: " + String.valueOf(lat) + " lon: " + String.valueOf(lon);
+        html += "</td></tr>";
+
+        return html;
     }
 
 }
