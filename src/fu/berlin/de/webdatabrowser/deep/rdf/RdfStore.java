@@ -41,7 +41,7 @@ public class RdfStore implements DeebRdfStore {
     private static final String XML_NAME = "rdfStore.xml";
 
     public static synchronized RdfStore getInstance() {
-        return(instance == null ? new RdfStore() : instance);
+        return(instance == null ? instance = new RdfStore() : instance);
     }
 
     public RdfStore() {
