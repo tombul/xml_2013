@@ -130,7 +130,6 @@ public class RdfStore implements DeebRdfStore {
             try {
                 OutputStream saveStream = new FileOutputStream(history);
                 rdfModel.write(saveStream);
-                rdfModel.close();
                 saveStream.close();
                 return true;
             }
