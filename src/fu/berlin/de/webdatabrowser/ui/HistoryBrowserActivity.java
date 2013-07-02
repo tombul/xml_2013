@@ -54,11 +54,11 @@ public class HistoryBrowserActivity extends Activity {
 
     public void performQuery(View v) {
         System.out.println("Perform Query");
-        List<DeebResource> results = rdfStore.performQuery("SELECT ?x WHERE { ?x  <http://www.w3.org/2001/vcard-rdf/3.0#NAME> ?y }", "x");
+        List<DeebResource> results = rdfStore.performQuery("SELECT ?x WHERE { ?x ?y ?z } LIMIT 50", "x");
         String result = "";
         for(DeebResource resource : results) {
-            Person person = (Person) resource;
-            result += person.getGivenName() + " " + person.getLastName() + ";";
+            // Person person = (Person) resource;
+            result += resource == null ? "null" : resource.getIdentifier();
         }
         ((TextView) findViewById(R.id.textView1)).setText(result);
     }

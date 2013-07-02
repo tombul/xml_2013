@@ -57,7 +57,7 @@ public class WebDataParser {
         }
         else if(url.contains("dbpedia")) {
             Log.d(LOG_TAG, "trying to parse rdf");
-            new LDParser(this).parseLD(sourceCode);
+            new LDParser(this).parseLD(sourceCode, url);
         }
         else if(url.matches(".*stackoverflow.com/questions/.+")) {
             Log.d(LOG_TAG, "trying to parse microdata");

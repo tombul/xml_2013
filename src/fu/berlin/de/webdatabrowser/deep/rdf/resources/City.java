@@ -178,14 +178,15 @@ public class City extends DeebResource {
         html += "<tr><td style=\"text-align:" +
                 "center; background-color:#FF9; padding:2px 0 2px 0; " +
                 "font-size:1.7em\"><strong>";
-        html += name; // TODO add name attribute to city
+        html += name;
         html += "</strong></td></tr>";
 
         // Bürgermeister
         html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
                 "word-break:break-all; word-wrap:break-word;\"><strong>" +
                 "Bürgermeister:</strong><br />";
-        html += leader.getGivenName() + " " + leader.getLastName();
+        if(leader != null)
+            html += leader.getGivenName() + " " + leader.getLastName();
         html += "</td></tr>";
         // Einwohnerzahl
         html += "<tr><td style=\"background-color:#FFC; padding:4px;" +

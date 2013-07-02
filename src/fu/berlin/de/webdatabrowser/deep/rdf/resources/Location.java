@@ -58,6 +58,12 @@ public class Location extends DeebResource {
         super(identifier);
     }
 
+    public Location(String lat, String lon) {
+        super("http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" +
+                lat + "%2C" +
+                lon + "&ie=UTF8&z=5&t=m&iwloc=addr&output=embed");
+    }
+
     @Override
     public List<Statement> getStatements() {
         // TODO Auto-generated method stub

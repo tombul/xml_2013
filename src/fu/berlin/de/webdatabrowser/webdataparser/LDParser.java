@@ -2,6 +2,8 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -56,7 +58,7 @@ public class LDParser {
     private static final String LOG_TAG        = "LDParser";
     private final WebDataParser resultHandler;
 
-    private static City         city           = new City("TODO Identifier");
+    private static City         city;
     private static List<Person> birthPlaceList = new ArrayList<Person>();
     private static List<Person> hometownList   = new ArrayList<Person>();
 
@@ -71,10 +73,16 @@ public class LDParser {
         if(tag.equals("dbpedia-owl:birthPlace") || tag.equals("dbpedia-owl:hometown")) {
 
             String uri = node.getParentNode().getAttributes().getNamedItem("rdf:about").getNodeValue();
+            try {
+                uri = URLDecoder.decode(uri, "utf-8");
+            }
+            catch(UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             String completeName = uri.split("^http://dbpedia.org/resource/")[1];
             String[] FirstLastname = completeName.split("_", 2);
 
-            Person person = new Person("TODO Identifier");
+            Person person = new Person(uri);
             person.setGivenName(FirstLastname[0]);
             if(FirstLastname.length >= 2) {
                 person.setLastName(FirstLastname[1]);
@@ -96,7 +104,7 @@ public class LDParser {
             String[] lonLat = point.split("^POINT\\(")[1].split(" ");
             lonLat[1] = lonLat[1].replace(")", "");
 
-            Location location = new Location("TODO Identifier");
+            Location location = new Location(lonLat[1], lonLat[0]);
             location.setLon(Double.parseDouble(lonLat[0]));
             location.setLat(Double.parseDouble(lonLat[1]));
             city.setLocation(location);
@@ -106,10 +114,16 @@ public class LDParser {
         else if(tag.equals("dbpedia-owl:leader")) {
 
             String uri = node.getAttributes().getNamedItem("rdf:resource").getNodeValue();
+            try {
+                uri = URLDecoder.decode(uri, "utf-8");
+            }
+            catch(UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             String completeName = uri.split("^http://dbpedia.org/resource/")[1];
             String[] FirstLastname = completeName.split("_");
 
-            Person person = new Person("TODO Identifier");
+            Person person = new Person(uri);
             person.setGivenName(FirstLastname[0]);
             person.setLastName(FirstLastname[1]);
             city.setLeader(person);
@@ -144,7 +158,7 @@ public class LDParser {
         return city;
     }
 
-    public void parseLD(String webContent) {
+    public void parseLD(String webContent, String url) {
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = null;
@@ -174,6 +188,8 @@ public class LDParser {
                                                                                 // noch
                                                                                 // unvollst�ndig
         targetDoc.appendChild(root);
+
+        city = new City(url);
 
         for(int i = 0; i < rdfEntries.getLength(); i++) {
             Node subject = rdfEntries.item(i);
