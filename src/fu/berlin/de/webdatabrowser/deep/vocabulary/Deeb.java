@@ -15,4 +15,10 @@ public final class Deeb extends DeebVocabulary {
 
     public static final Property ResourceType = getModel().createProperty(NS, "ResourceType");
 
+    public static final Property FoundWhere   = getModel().createProperty(NS, "FoundWhere");
+
+    public static final Property FoundWhen    = getModel().createProperty(NS, "FoundWhen");
+
+    public static final Property Found        = getModel().createProperty(NS, "Found");
+
 }

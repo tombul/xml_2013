@@ -9,7 +9,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.DC;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 
 public class Publication extends DeebResource {
 
@@ -22,6 +21,11 @@ public class Publication extends DeebResource {
     private List<String>                  subjects;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.PUBLICATION;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public Publication(String identifier) {
         super(identifier);
@@ -179,31 +183,28 @@ public class Publication extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getTitle() != null)
-            resource.addProperty(DC.title, getTitle());
+            getResource().addProperty(DC.title, getTitle());
         if(getIdentifier() != null)
-            resource.addProperty(DC.identifier, getIdentifier());
+            getResource().addProperty(DC.identifier, getIdentifier());
         if(getCreator() != null) {
             if(getCreator().getResource() == null)
                 getCreator().saveInModel(model);
-            resource.addProperty(DC.creator, getCreator().getResource());
+            getResource().addProperty(DC.creator, getCreator().getResource());
         }
         if(getDate() != null)
-            resource.addProperty(DC.date, getDate());
+            getResource().addProperty(DC.date, getDate());
         if(getDescription() != null)
-            resource.addProperty(DC.description, getDescription());
+            getResource().addProperty(DC.description, getDescription());
         if(getPublisher() != null)
-            resource.addProperty(DC.publisher, getPublisher());
+            getResource().addProperty(DC.publisher, getPublisher());
         if(getSubjects() != null) {
             for(String subject : getSubjects()) {
-                resource.addProperty(DC.subject, subject);
+                getResource().addProperty(DC.subject, subject);
             }
         }
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override

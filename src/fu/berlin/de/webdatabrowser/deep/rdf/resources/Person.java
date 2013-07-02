@@ -9,7 +9,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.Schema;
 
 /**
@@ -33,6 +32,11 @@ public class Person extends DeebResource {
     private String                        award;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.PERSON;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public String getGivenName() {
         return givenName;
@@ -127,21 +131,18 @@ public class Person extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getGivenName() != null)
-            resource.addProperty(VCARD.Given, getGivenName());
+            getResource().addProperty(VCARD.Given, getGivenName());
         if(getLastName() != null)
-            resource.addProperty(VCARD.NAME, getLastName());
+            getResource().addProperty(VCARD.NAME, getLastName());
         if(getUrl() != null)
-            resource.addProperty(Schema.URL, getUrl());
+            getResource().addProperty(Schema.URL, getUrl());
         if(getImage() != null)
-            resource.addProperty(Schema.image, getImage());
+            getResource().addProperty(Schema.image, getImage());
         if(getAward() != null)
-            resource.addProperty(Schema.award, getAward());
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
+            getResource().addProperty(Schema.award, getAward());
     }
 
     @Override

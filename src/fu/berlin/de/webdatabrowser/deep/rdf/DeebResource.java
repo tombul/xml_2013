@@ -8,6 +8,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Article;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.City;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Found;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Location;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
@@ -39,7 +40,8 @@ public abstract class DeebResource {
         PERSON("Person"),
         PUBLICATION("Publication"),
         REVIEW("Review"),
-        USER_COMMENT("User Comment");
+        USER_COMMENT("User Comment"),
+        FOUND("Found");
 
         private final String text;
 
@@ -67,6 +69,7 @@ public abstract class DeebResource {
 
     private Resource resource;
     private String   identifier;
+    private Found    found;
 
     public DeebResource(String identifier) {
         this.identifier = identifier;
@@ -143,12 +146,40 @@ public abstract class DeebResource {
      * 
      * @param model
      */
-    public abstract void saveInModel(Model model);
+    public void saveInModel(Model model) {
+        Resource resource = model.createResource(getIdentifier());
+        model.remove(resource.listProperties());
+        setResource(resource);
+
+        if(getFound() != null) {
+            if(getFound().getResource() == null)
+                getFound().saveInModel(model);
+            getResource().addProperty(Deeb.Found, getFound().getResource());
+        }
+
+        resource.addProperty(Deeb.ResourceType, getPropertyType().toString());
+    }
+
+    protected abstract DeebPropertyType getPropertyType();
 
     /**
      * @return Html to display
      */
     public abstract String getHtml();
+
+    public Found getFound() {
+        return found;
+    }
+
+    public void setFound(Found found) {
+        this.found = found;
+        if(getResource() != null) {
+            getResource().removeAll(Deeb.Found);
+            if(found.getResource() == null)
+                found.saveInModel(getResource().getModel());
+            getResource().addProperty(Deeb.Found, found.getResource());
+        }
+    }
 
     /**
      * Erzeugt ein neues DeebResource-Objekt aus einem Resource-Objekt.

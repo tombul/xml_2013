@@ -7,7 +7,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.Pos;
 
 public class Location extends DeebResource {
@@ -17,6 +16,11 @@ public class Location extends DeebResource {
     private double                        lat;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.LOCATION;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public double getAlt() {
         return alt;
@@ -92,18 +96,15 @@ public class Location extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getLon() != 0)
-            resource.addLiteral(Pos.long_, getLon());
+            getResource().addLiteral(Pos.long_, getLon());
         if(getLat() != 0)
-            resource.addLiteral(Pos.lat, getLat());
+            getResource().addLiteral(Pos.lat, getLat());
         if(getAlt() != 0)
-            resource.addLiteral(Pos.alt, getAlt());
+            getResource().addLiteral(Pos.alt, getAlt());
 
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override

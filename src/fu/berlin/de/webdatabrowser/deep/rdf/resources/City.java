@@ -8,7 +8,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.DBPediaOwl;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.Pos;
 
 public class City extends DeebResource {
@@ -22,6 +21,11 @@ public class City extends DeebResource {
     private List<Person>                  hometown;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.CITY;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public double getPopulationTotal() {
         return populationTotal;
@@ -132,40 +136,37 @@ public class City extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getPopulationTotal() != 0)
-            resource.addLiteral(DBPediaOwl.populationTotal, getPopulationTotal());
+            getResource().addLiteral(DBPediaOwl.populationTotal, getPopulationTotal());
         if(getLeader() != null) {
             if(getLeader().getResource() == null)
                 getLeader().saveInModel(model);
-            resource.addProperty(DBPediaOwl.leader, getLeader().getResource());
+            getResource().addProperty(DBPediaOwl.leader, getLeader().getResource());
         }
         if(getLocation() != null) {
             if(getLocation().getResource() == null)
                 getLocation().saveInModel(model);
-            resource.addProperty(Pos.location, getLocation().getResource());
+            getResource().addProperty(Pos.location, getLocation().getResource());
         }
         if(getAreaTotal() != 0)
-            resource.addLiteral(DBPediaOwl.areaTotal, getAreaTotal());
+            getResource().addLiteral(DBPediaOwl.areaTotal, getAreaTotal());
         if(getBirthPlace() != null) {
             for(Person person : getBirthPlace()) {
                 if(person.getResource() == null)
                     person.saveInModel(model);
-                resource.addProperty(DBPediaOwl.birthPlace, person.getResource());
+                getResource().addProperty(DBPediaOwl.birthPlace, person.getResource());
             }
         }
         if(getHometown() != null) {
             for(Person person : getHometown()) {
                 if(person.getResource() == null)
                     person.saveInModel(model);
-                resource.addProperty(DBPediaOwl.hometown, person.getResource());
+                getResource().addProperty(DBPediaOwl.hometown, person.getResource());
             }
         }
 
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override

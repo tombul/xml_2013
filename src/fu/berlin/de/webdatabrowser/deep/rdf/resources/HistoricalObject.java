@@ -11,7 +11,6 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.DC;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.Europeana;
 
 public class HistoricalObject extends DeebResource {
@@ -26,6 +25,11 @@ public class HistoricalObject extends DeebResource {
     private String                        preview;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.HISTORICAL_OBJECT;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public String getTitle() {
         return title;
@@ -181,31 +185,26 @@ public class HistoricalObject extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getTitle() != null)
-            resource.addProperty(DC.title, getTitle());
+            getResource().addProperty(DC.title, getTitle());
         if(getType() != null) {
-
-            resource.addProperty(DC.type, type);
-
+            getResource().addProperty(DC.type, type);
         }
         if(getDescription() != null)
-            resource.addProperty(DC.description, getDescription());
+            getResource().addProperty(DC.description, getDescription());
         if(getLanguage() != null)
-            resource.addProperty(Europeana.language, getLanguage());
+            getResource().addProperty(Europeana.language, getLanguage());
         if(getCountry() != null)
-            resource.addProperty(Europeana.country, getCountry());
+            getResource().addProperty(Europeana.country, getCountry());
         if(getUri() != null)
-            resource.addProperty(Europeana.URI, getUri());
+            getResource().addProperty(Europeana.URI, getUri());
         if(getProvider() != null)
-            resource.addProperty(Europeana.provider, getProvider());
+            getResource().addProperty(Europeana.provider, getProvider());
         if(getPreview() != null)
-            resource.addProperty(Europeana.preview, getPreview());
+            getResource().addProperty(Europeana.preview, getPreview());
 
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.deep.rdf.resources;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -7,10 +8,8 @@ import java.util.List;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
-import com.ibm.icu.text.SimpleDateFormat;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.Schema;
 
 public class UserComment extends DeebResource {
@@ -21,6 +20,11 @@ public class UserComment extends DeebResource {
     private Person                        creator;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.USER_COMMENT;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public String getCommentText() {
         return commentText;
@@ -42,7 +46,7 @@ public class UserComment extends DeebResource {
         this.commentTime = commentTime;
         if(getResource() != null) {
             getResource().removeAll(Schema.commentTime);
-            getResource().addProperty(Schema.commentTime, SimpleDateFormat.getDateTimeInstance().format(commentTime));
+            getResource().addProperty(Schema.commentTime, DateFormat.getDateTimeInstance().format(commentTime));
         }
     }
 
@@ -99,7 +103,7 @@ public class UserComment extends DeebResource {
             this.commentText = resource.getProperty(Schema.commentText).getString();
         if(resource.getProperty(Schema.commentTime) != null)
             try {
-                this.commentTime = SimpleDateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.datePublished).getString());
+                this.commentTime = DateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.datePublished).getString());
             }
             catch(ParseException e) {
             }
@@ -113,26 +117,23 @@ public class UserComment extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getCommentText() != null)
-            resource.addProperty(Schema.commentText, getCommentText());
+            getResource().addProperty(Schema.commentText, getCommentText());
         if(getCommentTime() != null)
-            resource.addProperty(Schema.commentTime, SimpleDateFormat.getDateTimeInstance().format(getCommentTime()));
+            getResource().addProperty(Schema.commentTime, DateFormat.getDateTimeInstance().format(getCommentTime()));
         if(getCreator() != null) {
             if(getCreator().getResource() == null)
                 getCreator().saveInModel(model);
-            resource.addProperty(Schema.creator, getCreator().getResource());
+            getResource().addProperty(Schema.creator, getCreator().getResource());
         }
         if(getDiscusses() != null) {
             if(getDiscusses().getResource() == null)
                 getDiscusses().saveInModel(model);
-            resource.addProperty(Schema.discusses, getDiscusses().getResource());
+            getResource().addProperty(Schema.discusses, getDiscusses().getResource());
         }
 
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override

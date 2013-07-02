@@ -1,7 +1,7 @@
 package fu.berlin.de.webdatabrowser.deep.rdf.resources;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +11,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 import fu.berlin.de.webdatabrowser.deep.vocabulary.Schema;
 
 public class Article extends DeebResource {
@@ -28,6 +27,11 @@ public class Article extends DeebResource {
     private List<Review>                  reviews;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.ARTICLE;
+
+    @Override
+    protected DeebPropertyType getPropertyType() {
+        return PROPERTY_TYPE;
+    }
 
     public String getName() {
         return name;
@@ -85,7 +89,7 @@ public class Article extends DeebResource {
         this.datePublished = datePublished;
         if(getResource() != null) {
             getResource().removeAll(Schema.datePublished);
-            getResource().addProperty(Schema.datePublished, SimpleDateFormat.getDateTimeInstance().format(datePublished));
+            getResource().addProperty(Schema.datePublished, DateFormat.getDateTimeInstance().format(datePublished));
         }
     }
 
@@ -111,7 +115,7 @@ public class Article extends DeebResource {
         this.dateModified = dateModified;
         if(getResource() != null) {
             getResource().removeAll(Schema.dateModified);
-            getResource().addProperty(Schema.dateModified, SimpleDateFormat.getDateTimeInstance().format(dateModified));
+            getResource().addProperty(Schema.dateModified, DateFormat.getDateTimeInstance().format(dateModified));
         }
     }
 
@@ -187,7 +191,7 @@ public class Article extends DeebResource {
             this.url = resource.getProperty(Schema.URL).getString();
         if(resource.getProperty(Schema.datePublished) != null)
             try {
-                this.datePublished = SimpleDateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.datePublished).getString());
+                this.datePublished = DateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.datePublished).getString());
             }
             catch(ParseException e) {
             }
@@ -195,7 +199,7 @@ public class Article extends DeebResource {
             this.author = (Person) DeebResource.createResource(resource.getProperty(Schema.author).getResource());
         if(resource.getProperty(Schema.dateModified) != null)
             try {
-                this.dateModified = SimpleDateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.dateModified).getString());
+                this.dateModified = DateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.dateModified).getString());
             }
             catch(ParseException e) {
             }
@@ -219,46 +223,43 @@ public class Article extends DeebResource {
 
     @Override
     public void saveInModel(Model model) {
-        Resource resource = model.createResource(getIdentifier());
-        model.remove(resource.listProperties());
-        setResource(resource);
+        super.saveInModel(model);
 
         if(getName() != null)
-            resource.addProperty(Schema.name, getName());
+            getResource().addProperty(Schema.name, getName());
         if(getUrl() != null)
-            resource.addProperty(Schema.URL, getUrl());
+            getResource().addProperty(Schema.URL, getUrl());
         if(getDescription() != null)
-            resource.addProperty(Schema.description, getDescription());
+            getResource().addProperty(Schema.description, getDescription());
         if(getDatePublished() != null)
-            resource.addProperty(Schema.datePublished, SimpleDateFormat.getDateTimeInstance().format(getDatePublished()));
+            getResource().addProperty(Schema.datePublished, DateFormat.getDateTimeInstance().format(getDatePublished()));
         if(getAuthor() != null) {
             if(getAuthor().getResource() == null)
                 getAuthor().saveInModel(model);
-            resource.addProperty(Schema.author, getAuthor().getResource());
+            getResource().addProperty(Schema.author, getAuthor().getResource());
         }
         if(getDateModified() != null)
-            resource.addProperty(Schema.dateModified, SimpleDateFormat.getDateTimeInstance().format(getDateModified()));
+            getResource().addProperty(Schema.dateModified, DateFormat.getDateTimeInstance().format(getDateModified()));
         if(getEditor() != null) {
             if(getEditor().getResource() == null)
                 getEditor().saveInModel(model);
-            resource.addProperty(Schema.editor, getEditor().getResource());
+            getResource().addProperty(Schema.editor, getEditor().getResource());
         }
         if(getComments() != null) {
             for(UserComment comment : getComments()) {
                 if(comment.getResource() == null)
                     comment.saveInModel(model);
-                resource.addProperty(Schema.comment, comment.getResource());
+                getResource().addProperty(Schema.comment, comment.getResource());
             }
         }
         if(getReviews() != null) {
             for(Review review : getReviews()) {
                 if(review.getResource() == null)
                     review.saveInModel(model);
-                resource.addProperty(Schema.review, review.getResource());
+                getResource().addProperty(Schema.review, review.getResource());
             }
         }
 
-        resource.addProperty(Deeb.ResourceType, PROPERTY_TYPE.toString());
     }
 
     @Override
