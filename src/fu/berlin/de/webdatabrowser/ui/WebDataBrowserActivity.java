@@ -27,6 +27,7 @@ public class WebDataBrowserActivity extends Activity implements HttpResponseHand
         setContentView(R.layout.activity_webdatabrowser);
         ((MenuItem) findViewById(R.id.webdatabrowser_menuitem_towebdatabrowser)).setHighlighted(true);
         webView = (WebView) findViewById(R.id.webdatabrowser_webview);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
