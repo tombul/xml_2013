@@ -38,12 +38,11 @@ public class Person extends DeebResource {
         super(identifier);
     }
 
-    public Person(String givenName, String lastName, String url, String image, String award) {
+    public Person(String givenName, String lastName, String url, String award) {
         super(url);
         this.givenName = givenName;
         this.lastName = lastName;
         this.url = url;
-        this.image = image;
         this.award = award;
     }
 

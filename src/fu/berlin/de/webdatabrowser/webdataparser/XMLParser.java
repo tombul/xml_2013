@@ -134,8 +134,26 @@ public class XMLParser implements HttpResponseHandler {
             }
         }
         while((activeNode = activeNode.getNextSibling()) != null);
-
-        return new Publication(title, identifier, creator, date, description, publisher, subject);
+        Publication result = new Publication(identifier);
+        if(title != null) {
+            result.setTitle(title);
+        }
+        if(creator != null) {
+            result.setCreator(creator);
+        }
+        if(subject != null) {
+            result.setSubjects(subject);
+        }
+        if(publisher != null) {
+            result.setPublisher(publisher);
+        }
+        if(description != null) {
+            result.setDescription(description);
+        }
+        if(date != null) {
+            result.setDate(date);
+        }
+        return result;
     }
 
 }

@@ -123,6 +123,7 @@ public class MicrodataParser {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private DeebResource getArticleFromNode(Node node) {
         try {
             Node activeNode = node;
@@ -173,7 +174,20 @@ public class MicrodataParser {
                 }
             }
             while((activeNode = activeNode.getNextSibling()) != null);
-            return new Article(name, url, description, keywords, datePublished, author, dateModified, editor, comments, reviews);
+            Article result = new Article(name, url, description, keywords, datePublished, author);
+            if(dateModified != null) {
+                result.setDateModified(dateModified);
+            }
+            if(editor != null) {
+                result.setEditor(editor);
+            }
+            if(!comments.isEmpty()) {
+                result.setComments(comments);
+            }
+            if(!reviews.isEmpty()) {
+                result.setReviews(reviews);
+            }
+            return result;
         }
         catch(ParseException e) {
             e.printStackTrace();
@@ -233,7 +247,11 @@ public class MicrodataParser {
             }
         }
         while((activeNode = activeNode.getNextSibling()) != null);
-        return new Person(givenName, lastName, url, image, award);
+        Person result = new Person(givenName, lastName, url, award);
+        if(image != null) {
+            result.setImage(image);
+        }
+        return result;
     }
 
     private UserComment getCommentContent(Node node) {
@@ -270,6 +288,7 @@ public class MicrodataParser {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private Review getReviewContent(Node node) {
         try {
             Node activeNode = node;
@@ -312,7 +331,17 @@ public class MicrodataParser {
                 }
             }
             while((activeNode = activeNode.getNextSibling()) != null);
-            return new Review(about, url, description, datePublished, author, dateModified, editor, comments);
+            Review result = new Review(about, url, description, datePublished, author);
+            if(dateModified != null) {
+                result.setDateModified(dateModified);
+            }
+            if(editor != null) {
+                result.setEditor(editor);
+            }
+            if(!comments.isEmpty()) {
+                result.setComments(comments);
+            }
+            return result;
         }
         catch(ParseException e) {
             e.printStackTrace();

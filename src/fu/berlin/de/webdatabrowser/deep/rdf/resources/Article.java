@@ -37,7 +37,7 @@ public class Article extends DeebResource {
         super(identifier);
     }
 
-    public Article(String name, String url, String description, String keywords, Date datePublished, Person author, Date dateModified, Person editor, List<UserComment> comments, List<Review> reviews) {
+    public Article(String name, String url, String description, String keywords, Date datePublished, Person author) {
         super(url);
         this.name = name;
         this.url = url;
@@ -45,10 +45,6 @@ public class Article extends DeebResource {
         this.keywords = keywords;
         this.datePublished = datePublished;
         this.author = author;
-        this.dateModified = dateModified;
-        this.editor = editor;
-        this.comments = comments;
-        this.reviews = reviews;
     }
 
     public String getName() {

@@ -35,16 +35,13 @@ public class Review extends DeebResource {
         super(identifier);
     }
 
-    public Review(String about, String url, String description, Date datePublished, Person author, Date dateModified, Person editor, List<UserComment> comments) {
+    public Review(String about, String url, String description, Date datePublished, Person author) {
         super(url);
         this.about = about;
         this.url = url;
         this.description = description;
         this.datePublished = datePublished;
         this.author = author;
-        this.dateModified = dateModified;
-        this.editor = editor;
-        this.comments = comments;
     }
 
     public String getAbout() {

@@ -31,17 +31,6 @@ public class Publication extends DeebResource {
         super(identifier);
     }
 
-    public Publication(String title, String identifier, Person creator, String date, String description, String publisher, List<String> subjects) {
-        super(identifier);
-        this.title = title;
-        this.identifier = identifier;
-        this.creator = creator;
-        this.date = date;
-        this.description = description;
-        this.publisher = publisher;
-        this.subjects = subjects;
-    }
-
     public String getTitle() {
         return title;
     }
