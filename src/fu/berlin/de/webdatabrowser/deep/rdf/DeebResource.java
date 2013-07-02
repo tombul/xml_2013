@@ -220,6 +220,11 @@ public abstract class DeebResource {
             default:
                 break;
         }
+
+        if(resource.getProperty(Deeb.Found) != null) {
+            result.setFound((Found) DeebResource.createResource(resource.getProperty(Deeb.Found).getResource()));
+        }
+
         return result.fromResource(resource);
     }
 }
