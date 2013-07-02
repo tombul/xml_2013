@@ -33,6 +33,24 @@ public class Article extends DeebResource {
         return PROPERTY_TYPE;
     }
 
+    public Article(String identifier) {
+        super(identifier);
+    }
+
+    public Article(String name, String url, String description, String keywords, Date datePublished, Person author, Date dateModified, Person editor, List<UserComment> comments, List<Review> reviews) {
+        super(url);
+        this.name = name;
+        this.url = url;
+        this.description = description;
+        this.keywords = keywords;
+        this.datePublished = datePublished;
+        this.author = author;
+        this.dateModified = dateModified;
+        this.editor = editor;
+        this.comments = comments;
+        this.reviews = reviews;
+    }
+
     public String getName() {
         return name;
     }
@@ -165,10 +183,6 @@ public class Article extends DeebResource {
         }
     }
 
-    public Article(String identifier) {
-        super(identifier);
-    }
-
     @Override
     public List<Statement> getStatements() {
         // TODO Auto-generated method stub
@@ -263,10 +277,17 @@ public class Article extends DeebResource {
     }
 
     @Override
+    public String getHeaderHtml() {
+        String cssInclude = "<head><link href=\"http://cdn.sstatic.net/stackoverflow/all.css?v=db16ef7a3fac\" type=\"text/css\" rel=\"stylesheet\"></link></head>";
+        return cssInclude;
+    }
+
+    @Override
     public String getHtml() {
-        String cssInclude = "<link href=\"http://cdn.sstatic.net/stackoverflow/all.css?v=db16ef7a3fac\" type=\"text/css\" rel=\"stylesheet\"></link>";
-        // TODO Auto-generated method stub
-        return null;
+        String html = "<body>" +
+                "blöder text, es funzt" +
+                "</body>";
+        return html;
     }
 
 }

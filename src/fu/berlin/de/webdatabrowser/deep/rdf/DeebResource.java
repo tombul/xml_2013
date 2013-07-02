@@ -182,6 +182,13 @@ public abstract class DeebResource {
     }
 
     /**
+     * @return Html for content to add in the <head> section
+     */
+    public String getHeaderHtml() {
+        return "";
+    }
+
+    /**
      * Erzeugt ein neues DeebResource-Objekt aus einem Resource-Objekt.
      * 
      * @param resource

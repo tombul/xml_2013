@@ -57,7 +57,10 @@ public class WebDataBrowserActivity extends Activity implements HttpResponseHand
         String source = "<!DOCTYPE html><html>";
 
         if(resources.isEmpty()) {
-            source = "Nothing useful found.";
+            source += "Nothing useful found.";
+        }
+        else {
+            source += resources.get(0).getHeaderHtml();
         }
 
         for(DeebResource resource : resources) {

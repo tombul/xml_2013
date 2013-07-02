@@ -15,7 +15,7 @@ import fu.berlin.de.webdatabrowser.deep.vocabulary.Schema;
 
 public class Review extends DeebResource {
 
-    private Article                       about;
+    private String                        about;
     private String                        url;
     private String                        description;
     private Date                          datePublished;
@@ -35,17 +35,27 @@ public class Review extends DeebResource {
         super(identifier);
     }
 
-    public Article getAbout() {
+    public Review(String about, String url, String description, Date datePublished, Person author, Date dateModified, Person editor, List<UserComment> comments) {
+        super(url);
+        this.about = about;
+        this.url = url;
+        this.description = description;
+        this.datePublished = datePublished;
+        this.author = author;
+        this.dateModified = dateModified;
+        this.editor = editor;
+        this.comments = comments;
+    }
+
+    public String getAbout() {
         return about;
     }
 
-    public void setAbout(Article about) {
+    public void setAbout(String about) {
         this.about = about;
         if(getResource() != null) {
             getResource().removeAll(Schema.about);
-            if(about.getResource() == null)
-                about.saveInModel(getResource().getModel());
-            getResource().addProperty(Schema.about, about.getResource());
+            getResource().addProperty(Schema.about, about);
         }
     }
 
@@ -158,7 +168,7 @@ public class Review extends DeebResource {
         setResource(resource);
 
         if(resource.getProperty(Schema.about) != null)
-            this.about = (Article) DeebResource.createResource(resource.getProperty(Schema.about).getResource());
+            this.about = resource.getProperty(Schema.about).getString();
         if(resource.getProperty(Schema.URL) != null)
             this.url = resource.getProperty(Schema.URL).getString();
         if(resource.getProperty(Schema.datePublished) != null)
@@ -197,11 +207,8 @@ public class Review extends DeebResource {
     public void saveInModel(Model model) {
         super.saveInModel(model);
 
-        if(getAbout() != null) {
-            if(getAbout().getResource() == null)
-                getAbout().saveInModel(model);
-            getResource().addProperty(Schema.about, getAbout().getResource());
-        }
+        if(getAbout() != null)
+            getResource().addProperty(Schema.about, getAbout());
         if(getUrl() != null)
             getResource().addProperty(Schema.URL, getUrl());
         if(getDescription() != null)

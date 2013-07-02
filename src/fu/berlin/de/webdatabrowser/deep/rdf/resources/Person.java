@@ -21,10 +21,6 @@ import fu.berlin.de.webdatabrowser.deep.vocabulary.Schema;
  */
 public class Person extends DeebResource {
 
-    public Person(String identifier) {
-        super(identifier);
-    }
-
     private String                        givenName;
     private String                        lastName;
     private String                        url;
@@ -36,6 +32,19 @@ public class Person extends DeebResource {
     @Override
     protected DeebPropertyType getPropertyType() {
         return PROPERTY_TYPE;
+    }
+
+    public Person(String identifier) {
+        super(identifier);
+    }
+
+    public Person(String givenName, String lastName, String url, String image, String award) {
+        super(url);
+        this.givenName = givenName;
+        this.lastName = lastName;
+        this.url = url;
+        this.image = image;
+        this.award = award;
     }
 
     public String getGivenName() {
@@ -148,7 +157,7 @@ public class Person extends DeebResource {
     @Override
     public String getHtml() {
         // TODO Auto-generated method stub
-        String html = "<div style=\"background-color:#FAC; padding:4px;" + "word-break:break-all; word-wrap:break-word;\">";
+        String html = "<div>";
         if(givenName == null) {
             html += lastName;
         }

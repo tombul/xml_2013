@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,7 +47,6 @@ public class XMLParser implements HttpResponseHandler {
             ByteArrayOutputStream outputStream = WebDataParser.applyXSL(resultHandler.getContext(),
                     new ByteArrayInputStream(source.getBytes()), R.raw.xslt_oai_dc, true);
 
-            // TODO Generate Ressources
             LinkedList<DeebResource> objects = getResourceFromXML(new ByteArrayInputStream(outputStream.toByteArray()), true);
             resultHandler.onParsingResultAvailable(objects);
         }
@@ -75,15 +73,12 @@ public class XMLParser implements HttpResponseHandler {
             return objects;
         }
         catch(SAXException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         catch(IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         catch(ParserConfigurationException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -112,8 +107,7 @@ public class XMLParser implements HttpResponseHandler {
                 else if(field.equals("dc:creator")) {
                     String lName = value.split(",")[0];
                     if(value.split(",").length < 2) {
-                        Random r = new Random();
-                        Person person = new Person(Integer.toString(r.nextInt()) + lName);
+                        Person person = new Person(lName);
                         person.setLastName(lName);
                         creator = person;
                     }

@@ -16,7 +16,7 @@ public class UserComment extends DeebResource {
 
     private String                        commentText;
     private Date                          commentTime;
-    private Article                       discusses;
+    private String                        discusses;
     private Person                        creator;
 
     private static final DeebPropertyType PROPERTY_TYPE = DeebPropertyType.USER_COMMENT;
@@ -24,6 +24,18 @@ public class UserComment extends DeebResource {
     @Override
     protected DeebPropertyType getPropertyType() {
         return PROPERTY_TYPE;
+    }
+
+    public UserComment(String identifier) {
+        super(identifier);
+    }
+
+    public UserComment(String commentText, Date commentTime, String discusses, Person creator) {
+        super(discusses);
+        this.commentText = commentText;
+        this.commentTime = commentTime;
+        this.discusses = discusses;
+        this.creator = creator;
     }
 
     public String getCommentText() {
@@ -50,17 +62,15 @@ public class UserComment extends DeebResource {
         }
     }
 
-    public Article getDiscusses() {
+    public String getDiscusses() {
         return discusses;
     }
 
-    public void setDiscusses(Article discusses) {
+    public void setDiscusses(String discusses) {
         this.discusses = discusses;
         if(getResource() != null) {
             getResource().removeAll(Schema.discusses);
-            if(discusses.getResource() == null)
-                discusses.saveInModel(getResource().getModel());
-            getResource().addProperty(Schema.discusses, discusses.getResource());
+            getResource().addProperty(Schema.discusses, discusses);
         }
     }
 
@@ -76,11 +86,6 @@ public class UserComment extends DeebResource {
                 creator.saveInModel(getResource().getModel());
             getResource().addProperty(Schema.creator, creator.getResource());
         }
-    }
-
-    public UserComment(String identifier) {
-        super(identifier);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -110,7 +115,7 @@ public class UserComment extends DeebResource {
         if(resource.getProperty(Schema.creator) != null)
             this.creator = (Person) DeebResource.createResource(resource.getProperty(Schema.creator).getResource());
         if(resource.getProperty(Schema.discusses) != null)
-            this.discusses = (Article) DeebResource.createResource(resource.getProperty(Schema.discusses).getResource());
+            this.discusses = resource.getProperty(Schema.discusses).getString();
 
         return this;
     }
@@ -129,9 +134,7 @@ public class UserComment extends DeebResource {
             getResource().addProperty(Schema.creator, getCreator().getResource());
         }
         if(getDiscusses() != null) {
-            if(getDiscusses().getResource() == null)
-                getDiscusses().saveInModel(model);
-            getResource().addProperty(Schema.discusses, getDiscusses().getResource());
+            getResource().addProperty(Schema.discusses, getDiscusses());
         }
 
     }
