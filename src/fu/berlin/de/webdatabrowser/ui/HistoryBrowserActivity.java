@@ -5,66 +5,62 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
-import android.widget.TextView;
+import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
-import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
+import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class HistoryBrowserActivity extends Activity {
-
-    private RdfStore rdfStore;
-    private int      i = 0;
+    protected static final String[] PRESET_QUERIES             = new String[] { "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }",
+                                                               "SELECT ?subject WHERE { ?subject <http://Schema.org/author> ?object }" };
+    private static final String[]   PRESET_QUERIES_DESCRIPTION = new String[] { "everything (file)",
+                                                               "authors of something" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historybrowser);
         ((MenuItem) findViewById(R.id.historybrowser_menuitem_tohistorybrowser)).setHighlighted(true);
-        rdfStore = RdfStore.getInstance();
+        final RdfStore rdfStore = RdfStore.getInstance();
+        final WebView webView = (WebView) findViewById(R.id.historybrowser_webview);
+        final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, PRESET_QUERIES_DESCRIPTION);
+        final Spinner spinner = (Spinner) findViewById(R.id.historybrowser_spinner);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-    }
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0) {
+                    Debug.writeFileToExternalStorage(rdfStore.getQueryFormattedResult(PRESET_QUERIES[0]),
+                            "rdfstore_dump.txt");
+                    return;
+                }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+                List<DeebResource> resources = rdfStore.performQuery(PRESET_QUERIES[position]);
+                String source = "<!DOCTYPE html><html>";
 
-    public void loadStore(View v) {
-        rdfStore.loadStore();
-    }
+                if(resources.isEmpty()) {
+                    source += "Nothing useful found.";
+                }
 
-    public void exampleStore(View v) {
-        Person testPerson = new Person("http://Example.org/deeb/JCPien" + i);
-        testPerson.setGivenName("JC" + i);
-        testPerson.setLastName("Pien");
-        i++;
+                for(DeebResource resource : resources)
+                    source += resource.getHtml() + "<p/>";
 
-        rdfStore.addResource(testPerson);
-    }
+                source += "</html>";
+                webView.loadDataWithBaseURL(null, source, "text/html", "UTF-8", null);
+            }
 
-    public void deleteStore(View v) {
-        rdfStore.cleanStore();
-    }
-
-    public void performQuery(View v) {
-        System.out.println("Perform Query");
-        List<DeebResource> results = rdfStore.performQuery("SELECT ?x WHERE { ?x ?y ?z } LIMIT 50", "x");
-        String result = "";
-        for(DeebResource resource : results) {
-            // Person person = (Person) resource;
-            result += resource == null ? "null" : resource.getIdentifier();
-        }
-        ((TextView) findViewById(R.id.textView1)).setText(result);
-    }
-
-    public void saveStore(View v) {
-        rdfStore.saveStore();
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     public void toHistoryBrowser(View view) {
