@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.deep.rdf;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,6 +18,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -41,7 +43,12 @@ public class RdfStore implements DeebRdfStore {
     private static final String XML_NAME = "rdfStore.xml";
 
     public static synchronized RdfStore getInstance() {
-        return(instance == null ? instance = new RdfStore() : instance);
+        if(instance == null) {
+            instance = new RdfStore();
+            instance.loadStore();
+        }
+
+        return instance;
     }
 
     public RdfStore() {
@@ -54,8 +61,7 @@ public class RdfStore implements DeebRdfStore {
     }
 
     @Override
-    public synchronized List<DeebResource> performQuery(String queryString, String... params) {
-
+    public synchronized List<DeebResource> performQuery(String queryString) {
         Query query = QueryFactory.create(queryString);
         QueryExecution execution = QueryExecutionFactory.create(query, rdfModel);
         List<DeebResource> resources = new ArrayList<DeebResource>();
@@ -63,7 +69,7 @@ public class RdfStore implements DeebRdfStore {
             ResultSet results = execution.execSelect();
             for(; results.hasNext();) {
                 QuerySolution solution = results.nextSolution();
-                for(String param : params) {
+                for(String param : results.getResultVars()) {
                     Resource solResource = solution.getResource(param);
                     if(solResource.getProperty(Deeb.ResourceType) != null) {
                         DeebResource result = DeebResource.createResource(solResource);
@@ -76,6 +82,13 @@ public class RdfStore implements DeebRdfStore {
             execution.close();
         }
         return resources;
+    }
+
+    public synchronized String getQueryFormattedResult(String queryString) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(256);
+        ResultSet result = QueryExecutionFactory.create(QueryFactory.create(queryString), rdfModel).execSelect();
+        ResultSetFormatter.out(outputStream, result);
+        return outputStream.toString();
     }
 
     @Override
@@ -117,7 +130,6 @@ public class RdfStore implements DeebRdfStore {
             try {
                 OutputStream saveStream = new FileOutputStream(history);
                 rdfModel.write(saveStream);
-                rdfModel.close();
                 saveStream.close();
                 return true;
             }
