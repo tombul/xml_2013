@@ -102,12 +102,12 @@ public class Location extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-
         String html = "<tr><td style=\"background-color:#FFC; padding:4px;" +
                 "word-break:break-all; word-wrap:break-word;\"><strong>" +
                 "Standort:</strong><br />";
-        html += "lat: " + String.valueOf(lat) + " lon: " + String.valueOf(lon);
+        html += "<div style=\"width:250px;height:300px\"><iframe width=\"250\" height=\"300\" frameborder=\"0\" scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\" src=\"http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q=" +
+                lat + "%2C" +
+                lon + "&ie=UTF8&z=5&t=m&iwloc=addr&output=embed\"></iframe><br><table width=\"250\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td align=\"left\"></td></tr></table></div>";
         html += "</td></tr>";
 
         return html;
