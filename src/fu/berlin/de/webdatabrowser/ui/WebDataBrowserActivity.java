@@ -67,6 +67,7 @@ public class WebDataBrowserActivity extends Activity implements HttpResponseHand
 
         source += "</html>";
         webView.loadDataWithBaseURL(null, source, "text/html", "UTF-8", null);
+        RdfStore.getInstance().saveStore();
     }
 
     @Override
