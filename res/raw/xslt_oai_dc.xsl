@@ -13,6 +13,10 @@
 	    </deeb:publications>
 	</xsl:template>
 	
+    <xsl:template match="dc:identifier">
+    	<xsl:copy-of select="." />	
+    </xsl:template>
+	
     <xsl:template match="dc:title">
     	<xsl:copy-of select="." />	
     </xsl:template>

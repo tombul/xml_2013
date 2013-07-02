@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.deep.rdf.resources;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,7 +259,13 @@ public class HistoricalObject extends DeebResource {
         html += uri;
         html += "\" style=\"text-decoration:none; color:black; font-" +
                 "style:italic;\">";
-        html += URLDecoder.decode(uri);
+        try {
+            html += URLDecoder.decode(uri, "UTF-8");
+        }
+        catch(UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         html += "</a></td></tr>";
 

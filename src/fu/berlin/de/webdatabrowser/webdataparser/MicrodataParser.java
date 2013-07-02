@@ -15,7 +15,6 @@ import android.content.Context;
 import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.util.Debug;
 
 /**
  * @author tom
@@ -39,12 +38,8 @@ public class MicrodataParser {
         try {
             Element itemscope = Jsoup.parse(source, url).getElementsByAttribute("itemscope").first();
             String xmlSource = getXMLSource(itemscope);
-            Debug.writeFileToExternalStorage(xmlSource, "mdPreMDXSLT.xml");
-            Debug.logLongString(xmlSource);
             stream = new ByteArrayInputStream(xmlSource.getBytes("UTF-8"));
             ByteArrayOutputStream out = WebDataParser.applyXSL(context, stream, microDataID, false);
-            Debug.writeFileToExternalStorage(out.toString(), "mdPreRDFXSLT.xml");
-            Debug.logLongString(out.toString());
 
             // TODO Generate Ressources
             LinkedList<DeebResource> objects = new LinkedList<DeebResource>();

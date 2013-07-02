@@ -147,9 +147,14 @@ public class Person extends DeebResource {
     @Override
     public String getHtml() {
         // TODO Auto-generated method stub
-        String html = "<tr><td style=\"background-color:#FAC; padding:4px;" + "word-break:break-all; word-wrap:break-word;\">";
-        html += givenName + " " + lastName;
-        html += "</td></tr>";
+        String html = "<div style=\"background-color:#FAC; padding:4px;" + "word-break:break-all; word-wrap:break-word;\">";
+        if(givenName == null) {
+            html += lastName;
+        }
+        else {
+            html += givenName + " " + lastName;
+        }
+        html += "</div>";
         return html;
     }
 

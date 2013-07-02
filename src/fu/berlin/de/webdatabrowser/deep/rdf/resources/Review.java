@@ -165,6 +165,12 @@ public class Review extends DeebResource {
             }
         if(resource.getProperty(Schema.author) != null)
             this.author = (Person) DeebResource.createResource(resource.getProperty(Schema.author).getResource());
+        if(resource.getProperty(Schema.dateModified) != null)
+            try {
+                this.dateModified = SimpleDateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.dateModified).getString());
+            }
+            catch(ParseException e) {
+            }
         if(resource.getProperty(Schema.editor) != null)
             this.editor = (Person) DeebResource.createResource(resource.getProperty(Schema.editor).getResource());
         if(resource.getProperty(Schema.comment) != null) {
@@ -200,12 +206,17 @@ public class Review extends DeebResource {
             resource.addProperty(Schema.description, getDescription());
         if(getDatePublished() != null)
             resource.addProperty(Schema.datePublished, SimpleDateFormat.getDateTimeInstance().format(getDatePublished()));
-        if(getDateModified() != null)
-            resource.addProperty(Schema.dateModified, SimpleDateFormat.getDateTimeInstance().format(getDateModified()));
         if(getAuthor() != null) {
             if(getAuthor().getResource() == null)
                 getAuthor().saveInModel(model);
             resource.addProperty(Schema.author, getAuthor().getResource());
+        }
+        if(getDateModified() != null)
+            resource.addProperty(Schema.dateModified, SimpleDateFormat.getDateTimeInstance().format(getDateModified()));
+        if(getEditor() != null) {
+            if(getEditor().getResource() == null)
+                getEditor().saveInModel(model);
+            resource.addProperty(Schema.editor, getEditor().getResource());
         }
         if(getEditor() != null) {
             if(getEditor().getResource() == null)

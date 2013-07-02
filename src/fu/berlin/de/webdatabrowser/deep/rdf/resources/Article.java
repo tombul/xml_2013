@@ -22,6 +22,8 @@ public class Article extends DeebResource {
     private String                        keywords;
     private Date                          datePublished;
     private Person                        author;
+    private Date                          dateModified;
+    private Person                        editor;
     private List<UserComment>             comments;
     private List<Review>                  reviews;
 
@@ -101,6 +103,32 @@ public class Article extends DeebResource {
         }
     }
 
+    public Date getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(Date dateModified) {
+        this.dateModified = dateModified;
+        if(getResource() != null) {
+            getResource().removeAll(Schema.dateModified);
+            getResource().addProperty(Schema.dateModified, SimpleDateFormat.getDateTimeInstance().format(dateModified));
+        }
+    }
+
+    public Person getEditor() {
+        return editor;
+    }
+
+    public void setEditor(Person editor) {
+        this.editor = editor;
+        if(getResource() != null) {
+            getResource().removeAll(Schema.editor);
+            if(editor.getResource() == null)
+                editor.saveInModel(getResource().getModel());
+            getResource().addProperty(Schema.editor, editor.getResource());
+        }
+    }
+
     public List<UserComment> getComments() {
         return comments;
     }
@@ -165,6 +193,14 @@ public class Article extends DeebResource {
             }
         if(resource.getProperty(Schema.author) != null)
             this.author = (Person) DeebResource.createResource(resource.getProperty(Schema.author).getResource());
+        if(resource.getProperty(Schema.dateModified) != null)
+            try {
+                this.dateModified = SimpleDateFormat.getDateTimeInstance().parse(resource.getProperty(Schema.dateModified).getString());
+            }
+            catch(ParseException e) {
+            }
+        if(resource.getProperty(Schema.editor) != null)
+            this.editor = (Person) DeebResource.createResource(resource.getProperty(Schema.editor).getResource());
         if(resource.getProperty(Schema.comment) != null) {
             List<UserComment> comments = new ArrayList<UserComment>();
             for(Statement comment : resource.listProperties(Schema.comment).toList()) {
@@ -200,6 +236,13 @@ public class Article extends DeebResource {
                 getAuthor().saveInModel(model);
             resource.addProperty(Schema.author, getAuthor().getResource());
         }
+        if(getDateModified() != null)
+            resource.addProperty(Schema.dateModified, SimpleDateFormat.getDateTimeInstance().format(getDateModified()));
+        if(getEditor() != null) {
+            if(getEditor().getResource() == null)
+                getEditor().saveInModel(model);
+            resource.addProperty(Schema.editor, getEditor().getResource());
+        }
         if(getComments() != null) {
             for(UserComment comment : getComments()) {
                 if(comment.getResource() == null)
@@ -220,6 +263,7 @@ public class Article extends DeebResource {
 
     @Override
     public String getHtml() {
+        String cssInclude = "<link href=\"http://cdn.sstatic.net/stackoverflow/all.css?v=db16ef7a3fac\" type=\"text/css\" rel=\"stylesheet\"></link>";
         // TODO Auto-generated method stub
         return null;
     }

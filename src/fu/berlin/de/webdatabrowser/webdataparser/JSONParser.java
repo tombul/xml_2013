@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
-import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
 import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
 
@@ -33,31 +32,6 @@ public class JSONParser implements HttpResponseHandler {
         return iD;
     }
 
-    // Gets a JSON-document and a list of tags, extract content and creates xml
-    // tags
-    private String convertTags(String[][] regularExp, String content) {
-        // HistoricalObject object = new HistoricalObject(identifier)
-        String tags = "";
-
-        for(int i = 0; i < regularExp.length; i++) {
-            Matcher matcher = Pattern.compile(regularExp[i][0]).matcher(content);
-
-            if(matcher.find()) {
-                int pos = matcher.start() + Integer.valueOf(regularExp[i][1]);
-                String value = "";
-
-                while(content.charAt(pos) != '"') {
-                    value += String.valueOf(content.charAt(pos));
-                    pos++;
-                }
-                values[i] = value;
-                tags += "\t<" + regularExp[i][2] + ">" + value.replace("&", "&amp;") + "</" + regularExp[i][2] + ">\n";
-            }
-        }
-
-        return tags;
-    }
-
     // Gets String with web content and returns a xml-document for an object
     // whose ID is in the content
     public void parseJSON(String webContent) {
@@ -78,24 +52,6 @@ public class JSONParser implements HttpResponseHandler {
             resultHandler.onParsingResultAvailable(null);
             return;
         }
-
-        // Tags we want: titel, #chars to content, new tagname
-        String[][] regularExp = {
-                { "dcTitle.*", "18", "title" },
-                { "dcType.*", "17", "type" },
-                { "edmPreview.*", "13", "preview" },
-                { "dcDescription.*", "24", "description" },
-                { "edmLanguage.*", "22", "language" },
-                { "edmCountry.*", "21", "country" },
-                { "edmLandingPage.*", "17", "url" },
-                { "edmDataProvider.*", "26", "provider" } };
-
-        String tags = convertTags(regularExp, source); // create tags
-        String xmlDoc = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-                + "<historicalObject>\n" + tags + "</historicalObject>";
-
-        Debug.writeFileToExternalStorage(xmlDoc, "jsonXMLPreRDFXSLT.xml");
-        Debug.logLongString(xmlDoc);
 
         LinkedList<DeebResource> objects = new LinkedList<DeebResource>();
         HistoricalObject object = new HistoricalObject(values[6], values[0], values[1], values[3], values[4],

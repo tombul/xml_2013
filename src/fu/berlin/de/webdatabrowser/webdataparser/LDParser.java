@@ -1,7 +1,6 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,13 +10,6 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,7 +22,6 @@ import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.City;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Location;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
-import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class LDParser {
     static ArrayList<String>    tags           = new ArrayList<String>(
@@ -71,27 +62,6 @@ public class LDParser {
 
     public LDParser(WebDataParser resultHandler) {
         this.resultHandler = resultHandler;
-    }
-
-    // Gibt dom document als string zurueck
-    private String getStringFromDoc(org.w3c.dom.Document doc) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(32);
-
-        try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.transform(new DOMSource(doc), new StreamResult(outputStream));
-        }
-        catch(TransformerConfigurationException e) {
-            Log.w(LOG_TAG, Log.getStackTraceString(e));
-        }
-        catch(TransformerFactoryConfigurationError e) {
-            Log.w(LOG_TAG, Log.getStackTraceString(e));
-        }
-        catch(TransformerException e) {
-            Log.w(LOG_TAG, Log.getStackTraceString(e));
-        }
-
-        return outputStream.toString();
     }
 
     private DeebResource createObject(String tag, Node node) {
@@ -245,12 +215,6 @@ public class LDParser {
                                                                                               // hat
             }
         }
-
-        Debug.writeFileToExternalStorage(webContent, "ldXMLPreLDXSLT.xml");
-        Debug.logLongString(webContent);
-        String result = getStringFromDoc(targetDoc);
-        Debug.writeFileToExternalStorage(result, "ldXMLPreRDFXSLT.xml");
-        Debug.logLongString(result);
 
         // TODO Generate Ressources
         LinkedList<DeebResource> objects = new LinkedList<DeebResource>();

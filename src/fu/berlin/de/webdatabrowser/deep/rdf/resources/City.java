@@ -181,10 +181,10 @@ public class City extends DeebResource {
         html += name; // TODO add name attribute to city
         html += "</strong></td></tr>";
 
-        // Bürgermeister
+        // BÃ¼rgermeister
         html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
                 "word-break:break-all; word-wrap:break-word;\"><strong>" +
-                "Bürgermeister:</strong><br />";
+                "BÃ¼rgermeister:</strong><br />";
         html += leader.getGivenName() + " " + leader.getLastName();
         html += "</td></tr>";
         // Einwohnerzahl
@@ -193,10 +193,10 @@ public class City extends DeebResource {
                 "Einwohnerzahl:</strong><br />";
         html += String.valueOf(populationTotal);
         html += "</td></tr>";
-        // Gesamtfläche
+        // GesamtflÃ¤che
         html += "<tr><td style=\"background-color:#FFC; padding:4px;" +
                 "word-break:break-all; word-wrap:break-word;\"><strong>" +
-                "Gesamtfläche:</strong><br />";
+                "GesamtflÃ¤che:</strong><br />";
         html += String.valueOf(areaTotal);
         html += "</td></tr>";
         // Standort
@@ -208,7 +208,8 @@ public class City extends DeebResource {
         html += "</td></tr>";
         int i = 0;
         for(Person person : birthPlace) {
-            html += person.getHtml();
+            html += "<tr><td style=\"background-color:#FCC; padding:4px;" +
+                    "word-break:break-all; word-wrap:break-word;\">" + person.getHtml() + "</td></tr>";
             i++;
             if(i > 50)
                 break;
@@ -221,7 +222,8 @@ public class City extends DeebResource {
         html += "</td></tr>";
         i = 0;
         for(Person person : hometown) {
-            html += person.getHtml();
+            html += "<tr><td style=\"background-color:#FCC; padding:4px;" +
+                    "word-break:break-all; word-wrap:break-word;\">" + person.getHtml() + "</td></tr>";
             i++;
             if(i > 50)
                 break;

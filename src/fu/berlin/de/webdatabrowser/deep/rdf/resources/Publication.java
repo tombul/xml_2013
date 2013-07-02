@@ -1,9 +1,6 @@
 package fu.berlin.de.webdatabrowser.deep.rdf.resources;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -17,8 +14,9 @@ import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
 public class Publication extends DeebResource {
 
     private String                        title;
+    private String                        identifier;
     private Person                        creator;
-    private Date                          date;
+    private String                        date;
     private String                        description;
     private String                        publisher;
     private List<String>                  subjects;
@@ -27,6 +25,17 @@ public class Publication extends DeebResource {
 
     public Publication(String identifier) {
         super(identifier);
+    }
+
+    public Publication(String title, String identifier, Person creator, String date, String description, String publisher, List<String> subjects) {
+        super(identifier);
+        this.title = title;
+        this.identifier = identifier;
+        this.creator = creator;
+        this.date = date;
+        this.description = description;
+        this.publisher = publisher;
+        this.subjects = subjects;
     }
 
     public String getTitle() {
@@ -38,6 +47,20 @@ public class Publication extends DeebResource {
         if(getResource() != null) {
             getResource().removeAll(DC.title);
             getResource().addProperty(DC.title, title);
+        }
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+        if(getResource() != null) {
+            getResource().removeAll(DC.identifier);
+            getResource().addProperty(DC.identifier, identifier);
         }
     }
 
@@ -54,15 +77,15 @@ public class Publication extends DeebResource {
         }
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
         if(getResource() != null) {
             getResource().removeAll(DC.date);
-            getResource().addProperty(DC.date, SimpleDateFormat.getDateTimeInstance().format(date));
+            getResource().addProperty(DC.date, date);
         }
     }
 
@@ -123,6 +146,9 @@ public class Publication extends DeebResource {
         if(resource.getProperty(DC.title) != null)
             this.title = resource.getProperty(DC.title).getString();
 
+        if(resource.getProperty(DC.identifier) != null)
+            this.identifier = resource.getProperty(DC.identifier).getString();
+
         if(resource.getProperty(DC.creator) != null) {
             Resource creatorResource = resource.getProperty(DC.creator).getResource();
 
@@ -132,11 +158,8 @@ public class Publication extends DeebResource {
         }
 
         if(resource.getProperty(DC.date) != null) {
-            try {
-                this.date = SimpleDateFormat.getDateTimeInstance().parse(resource.getProperty(DC.date).getString());
-            }
-            catch(ParseException e) {
-            }
+
+            this.date = resource.getProperty(DC.date).getString();
         }
 
         if(resource.getProperty(DC.description) != null)
@@ -162,13 +185,15 @@ public class Publication extends DeebResource {
 
         if(getTitle() != null)
             resource.addProperty(DC.title, getTitle());
+        if(getIdentifier() != null)
+            resource.addProperty(DC.identifier, getIdentifier());
         if(getCreator() != null) {
             if(getCreator().getResource() == null)
                 getCreator().saveInModel(model);
             resource.addProperty(DC.creator, getCreator().getResource());
         }
         if(getDate() != null)
-            resource.addProperty(DC.date, SimpleDateFormat.getDateTimeInstance().format(getDate()));
+            resource.addProperty(DC.date, getDate());
         if(getDescription() != null)
             resource.addProperty(DC.description, getDescription());
         if(getPublisher() != null)
@@ -183,7 +208,60 @@ public class Publication extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-        return null;
+        String html = "<div style=\"width:90%;padding:10px;\">" +
+                "<table border=\"2\">" +
+                "<tr>" +
+                "<td>" +
+                "Title" +
+                "</td>" +
+                "<td>" +
+                this.title +
+                "</td>" +
+                "<tr>" +
+                "<td>" +
+                "Identifier" +
+                "</td>" +
+                "<td>" +
+                "<a href=\"" + this.identifier + "\">" + this.identifier + "</a>" +
+                "</td>" +
+                "<tr>" +
+                "<td>" +
+                "Creator" +
+                "</td>" +
+                "<td>" +
+                this.creator.getHtml() +
+                "</td>" +
+                "<tr>" +
+                "<td>" +
+                "Description" +
+                "</td>" +
+                "<td>" +
+                this.description +
+                "</td>" +
+                "<tr>" +
+                "<td>" +
+                "Publisher" +
+                "</td>" +
+                "<td>" +
+                this.publisher +
+                "</td>" +
+                "<tr>" +
+                "<td>" +
+                "Date" +
+                "</td>" +
+                "<td>" +
+                this.date +
+                "</td>" +
+                "<tr>" +
+                "<td>" +
+                "Subjects" +
+                "</td>" +
+                "<td>";
+        for(String subject : subjects) {
+            html += subject + "<br/>";
+
+        }
+        html += "</td></table></div>";
+        return html;
     }
 }
