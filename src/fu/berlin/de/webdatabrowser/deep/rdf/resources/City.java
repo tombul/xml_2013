@@ -210,7 +210,7 @@ public class City extends DeebResource {
         html += "</td></tr>";
         int i = 0;
         for(Person person : birthPlace) {
-            html += "<tr><td style=\"background-color:#FCC; padding:4px;" +
+            html += "<tr><td style=\"background-color:#FAC; padding:4px;" +
                     "word-break:break-all; word-wrap:break-word;\">" + person.getHtml() + "</td></tr>";
             i++;
             if(i > 50)
@@ -224,7 +224,7 @@ public class City extends DeebResource {
         html += "</td></tr>";
         i = 0;
         for(Person person : hometown) {
-            html += "<tr><td style=\"background-color:#FCC; padding:4px;" +
+            html += "<tr><td style=\"background-color:#FAC; padding:4px;" +
                     "word-break:break-all; word-wrap:break-word;\">" + person.getHtml() + "</td></tr>";
             i++;
             if(i > 50)
