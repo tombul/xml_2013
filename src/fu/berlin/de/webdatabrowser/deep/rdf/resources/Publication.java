@@ -205,15 +205,17 @@ public class Publication extends DeebResource {
                 "</td>" +
                 "<td>" +
                 "<a href=\"" + this.identifier + "\">" + this.identifier + "</a>" +
-                "</td>" +
-                "<tr>" +
-                "<td>" +
-                "Creator" +
-                "</td>" +
-                "<td>" +
-                this.creator +
-                "</td>" +
-                "<tr>" +
+                "</td>";
+        if(this.creator != null && !this.creator.isEmpty()) {
+            html += "<tr>" +
+                    "<td>" +
+                    "Creator" +
+                    "</td>" +
+                    "<td>" +
+                    this.creator +
+                    "</td>";
+        }
+        html += "<tr>" +
                 "<td>" +
                 "Description" +
                 "</td>" +

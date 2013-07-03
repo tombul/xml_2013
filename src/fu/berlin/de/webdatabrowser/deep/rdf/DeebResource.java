@@ -1,5 +1,6 @@
 package fu.berlin.de.webdatabrowser.deep.rdf;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -67,9 +68,9 @@ public abstract class DeebResource {
 
     }
 
-    private Resource resource;
-    private String   identifier;
-    private Found    found;
+    private Resource    resource;
+    private String      identifier;
+    private List<Found> found;
 
     public DeebResource(String identifier) {
         this.identifier = identifier;
@@ -152,9 +153,11 @@ public abstract class DeebResource {
         setResource(resource);
 
         if(getFound() != null) {
-            if(getFound().getResource() == null)
-                getFound().saveInModel(model);
-            getResource().addProperty(Deeb.Found, getFound().getResource());
+            for(Found found : getFound()) {
+                if(found.getResource() == null)
+                    found.saveInModel(model);
+                getResource().addProperty(Deeb.Found, found.getResource());
+            }
         }
 
         resource.addProperty(Deeb.ResourceType, getPropertyType().toString());
@@ -167,18 +170,46 @@ public abstract class DeebResource {
      */
     public abstract String getHtml();
 
-    public Found getFound() {
+    /**
+     * Gibt die Liste von Found-Timestamps zurueck.
+     * 
+     * @return
+     */
+    public List<Found> getFound() {
         return found;
     }
 
-    public void setFound(Found found) {
+    /**
+     * Setzt eine Liste von Found-Timestamps.
+     * 
+     * @param found
+     */
+    public void setFound(List<Found> found) {
         this.found = found;
         if(getResource() != null) {
             getResource().removeAll(Deeb.Found);
-            if(found.getResource() == null)
-                found.saveInModel(getResource().getModel());
+            for(Found foundObject : found) {
+                if(foundObject.getResource() == null)
+                    foundObject.saveInModel(getResource().getModel());
+                getResource().addProperty(Deeb.Found, foundObject.getResource());
+            }
+        }
+    }
+
+    /**
+     * Fuegt einen neuen Found-Timestamp hinzu.
+     * 
+     * @param found
+     */
+    public void addFound(Found found) {
+        if(this.found == null)
+            this.found = new ArrayList<Found>();
+        this.found.add(found);
+
+        if(getResource() != null) {
             getResource().addProperty(Deeb.Found, found.getResource());
         }
+
     }
 
     /**
@@ -229,7 +260,11 @@ public abstract class DeebResource {
         }
 
         if(resource.getProperty(Deeb.Found) != null) {
-            result.setFound((Found) DeebResource.createResource(resource.getProperty(Deeb.Found).getResource()));
+            List<Found> found = new ArrayList<Found>();
+            for(Statement foundStatement : resource.listProperties(Deeb.Found).toList()) {
+                found.add((Found) DeebResource.createResource(foundStatement.getResource()));
+            }
+            result.found = found;
         }
 
         return result.fromResource(resource);
