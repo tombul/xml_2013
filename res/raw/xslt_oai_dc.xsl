@@ -14,7 +14,9 @@
 	</xsl:template>
 	
     <xsl:template match="dc:identifier">
-    	<xsl:copy-of select="." />	
+    	<dc:identifier>
+	    	<xsl:value-of select="../../../oai:header/oai:identifier" />
+	   	</dc:identifier>	
     </xsl:template>
 	
     <xsl:template match="dc:title">

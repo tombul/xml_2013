@@ -337,7 +337,7 @@ public class MicrodataParser {
                         editorSet = true;
                         editor = getPersonContent(activeNode);
                     }
-                    else if(field.equals("comments")) {
+                    else if(field.equals("comment")) {
                         comments.add(getCommentContent(activeNode));
                         commentsSet = true;
                     }

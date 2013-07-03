@@ -46,6 +46,7 @@ public class XMLParser implements HttpResponseHandler {
             ByteArrayOutputStream outputStream = WebDataParser.applyXSL(resultHandler.getContext(),
                     new ByteArrayInputStream(source.getBytes()), R.raw.xslt_oai_dc, true);
 
+            Debug.writeFileToExternalStorage(outputStream.toByteArray(), "xmlNew.xml");
             LinkedList<DeebResource> objects = getResourceFromXML(new ByteArrayInputStream(outputStream.toByteArray()), true);
             resultHandler.onParsingResultAvailable(objects);
         }
@@ -101,7 +102,9 @@ public class XMLParser implements HttpResponseHandler {
                     title = value;
                 }
                 else if(field.equals("dc:identifier")) {
-                    identifier = value.trim();
+                    if(identifier == null) {
+                        identifier = value.trim();
+                    }
                 }
                 else if(field.equals("dc:creator")) {
                     creator = value;
