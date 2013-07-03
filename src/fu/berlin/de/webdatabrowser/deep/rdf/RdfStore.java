@@ -1,6 +1,5 @@
 package fu.berlin.de.webdatabrowser.deep.rdf;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -35,7 +35,7 @@ import fu.berlin.de.webdatabrowser.deep.vocabulary.Deeb;
  * 
  */
 public class RdfStore implements DeebRdfStore {
-
+    private static final String LOG_TAG  = "RdfStore";
     private static RdfStore     instance;
 
     private Model               rdfModel;
@@ -84,11 +84,19 @@ public class RdfStore implements DeebRdfStore {
         return resources;
     }
 
-    public synchronized String getQueryFormattedResult(String queryString) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(256);
-        ResultSet result = QueryExecutionFactory.create(QueryFactory.create(queryString), rdfModel).execSelect();
-        ResultSetFormatter.out(outputStream, result);
-        return outputStream.toString();
+    public synchronized boolean writeQueryFormattedResultToFile(String queryString, String path) {
+        try {
+            FileOutputStream outputStream = new FileOutputStream(new File(
+                    Environment.getExternalStorageDirectory().getPath() + "/" + path));
+            ResultSet result = QueryExecutionFactory.create(QueryFactory.create(queryString), rdfModel).execSelect();
+            ResultSetFormatter.out(outputStream, result);
+            outputStream.close();
+            return true;
+        }
+        catch(IOException e) {
+            Log.w(LOG_TAG, Log.getStackTraceString(e));
+            return false;
+        }
     }
 
     @Override

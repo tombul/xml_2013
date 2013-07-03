@@ -14,12 +14,13 @@ import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
 import fu.berlin.de.webdatabrowser.ui.widgets.MenuItem;
-import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class HistoryBrowserActivity extends Activity {
-    protected static final String[] PRESET_QUERIES             = new String[] { "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }",
+    protected static final String[] PRESET_QUERIES             = new String[] {
+                                                               "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }",
                                                                "SELECT ?object WHERE { ?subject <http://Schema.org/author> ?object }" };
-    private static final String[]   PRESET_QUERIES_DESCRIPTION = new String[] { "everything (file)",
+    private static final String[]   PRESET_QUERIES_DESCRIPTION = new String[] {
+                                                               "everything (file)",
                                                                "authors of something" };
 
     @Override
@@ -38,8 +39,7 @@ public class HistoryBrowserActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0) {
-                    Debug.writeFileToExternalStorage(rdfStore.getQueryFormattedResult(PRESET_QUERIES[0]),
-                            "rdfstore_dump.txt");
+                    rdfStore.writeQueryFormattedResultToFile(PRESET_QUERIES[0], "rdfstore_dump.txt");
                     return;
                 }
 
