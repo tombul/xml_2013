@@ -18,7 +18,7 @@ import fu.berlin.de.webdatabrowser.util.Debug;
 
 public class HistoryBrowserActivity extends Activity {
     protected static final String[] PRESET_QUERIES             = new String[] { "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }",
-                                                               "SELECT ?subject WHERE { ?subject <http://Schema.org/author> ?object }" };
+                                                               "SELECT ?object WHERE { ?subject <http://Schema.org/author> ?object }" };
     private static final String[]   PRESET_QUERIES_DESCRIPTION = new String[] { "everything (file)",
                                                                "authors of something" };
 
