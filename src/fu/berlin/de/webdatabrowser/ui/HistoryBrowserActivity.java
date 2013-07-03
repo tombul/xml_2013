@@ -41,9 +41,15 @@ public class HistoryBrowserActivity extends Activity {
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(spinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            int lastSelected = 0;
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(lastSelected == position)
+                    return;
+
+                lastSelected = position;
+
                 if(position == 0) {
                     new AsyncTask<String, Void, Boolean>() {
 
