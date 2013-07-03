@@ -26,11 +26,8 @@ import fu.berlin.de.webdatabrowser.deep.rdf.resources.Location;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 
 public class LDParser {
+    // befuellt mit ein paar Tags die man nehmen koennte
     static ArrayList<String>    tags           = new ArrayList<String>(
-                                                       // befuellt mit ein paar
-                                                       // Tags
-                                                       // die man
-                                                       // nehmen koennte
                                                        Arrays.asList(
                                                                // Einwohnerzahl
                                                                "dbpedia-owl:populationTotal",
@@ -98,9 +95,8 @@ public class LDParser {
             object = person;
         }
         else if(tag.equals("geo:geometry")) {
-
-            String point = node.getFirstChild().getTextContent(); // POINT(13.3989
-                                                                  // 52.5006)
+            // POINT(13.3989 52.5006)
+            String point = node.getFirstChild().getTextContent();
             String[] lonLat = point.split("^POINT\\(")[1].split(" ");
             lonLat[1] = lonLat[1].replace(")", "");
 
@@ -182,11 +178,8 @@ public class LDParser {
         Document targetDoc = db.newDocument();
         Element root = targetDoc.createElement("rdf:RDF");
         root.setAttribute("xmlns:rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        root.setAttribute("xmlns:dbpedia-owl", "http://dbpedia.org/ontology/"); // TODO
-                                                                                // n�tige
-                                                                                // namespaces
-                                                                                // noch
-                                                                                // unvollst�ndig
+        // TODO noetige namespaces noch unvollstaendig
+        root.setAttribute("xmlns:dbpedia-owl", "http://dbpedia.org/ontology/");
         targetDoc.appendChild(root);
 
         city = new City(url);
@@ -211,24 +204,14 @@ public class LDParser {
                     }
 
                     if(!foundTag)
-                        subject.removeChild(predicate); // l�scht predicate
-                                                        // wenn
-                                                        // es nicht in der
-                                                        // Tagliste gefunden
-                                                        // wurde
+                        // loescht predicate wenn es nicht in der Tagliste
+                        // gefunden wurde
+                        subject.removeChild(predicate);
                 }
                 if(subject.hasChildNodes())
-                    targetDoc.getDocumentElement().appendChild(targetDoc.adoptNode(subject)); // Subjekt
-                                                                                              // wird
-                                                                                              // nur
-                                                                                              // ins
-                                                                                              // neue
-                                                                                              // Doc
-                                                                                              // eingeh�ngt
-                                                                                              // wenn
-                                                                                              // es
-                                                                                              // Pr�dikate
-                                                                                              // hat
+                    // Subjekt wird nur ins neue Doc eingehaengt wenn es
+                    // Praedikate hat
+                    targetDoc.getDocumentElement().appendChild(targetDoc.adoptNode(subject));
             }
         }
 
