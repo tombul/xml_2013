@@ -61,19 +61,24 @@ public class RdfStore implements DeebRdfStore {
     }
 
     @Override
-    public synchronized List<DeebResource> performQuery(String queryString) {
+    public synchronized List<Object> performQuery(String queryString) {
         Query query = QueryFactory.create(queryString);
         QueryExecution execution = QueryExecutionFactory.create(query, rdfModel);
-        List<DeebResource> resources = new ArrayList<DeebResource>();
+        List<Object> resources = new ArrayList<Object>();
         try {
             ResultSet results = execution.execSelect();
             for(; results.hasNext();) {
                 QuerySolution solution = results.nextSolution();
                 for(String param : results.getResultVars()) {
-                    Resource solResource = solution.getResource(param);
-                    if(solResource.getProperty(Deeb.ResourceType) != null) {
-                        DeebResource result = DeebResource.createResource(solResource);
-                        resources.add(result);
+                    try {
+                        Resource solResource = solution.getResource(param);
+                        if(solResource.getProperty(Deeb.ResourceType) != null) {
+                            DeebResource result = DeebResource.createResource(solResource);
+                            resources.add(result);
+                        }
+                    }
+                    catch(ClassCastException e) {
+                        resources.add(solution.getLiteral(param));
                     }
                 }
             }

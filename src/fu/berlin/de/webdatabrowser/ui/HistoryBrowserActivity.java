@@ -11,6 +11,9 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import com.hp.hpl.jena.rdf.model.Literal;
+
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.RdfStore;
@@ -51,18 +54,21 @@ public class HistoryBrowserActivity extends Activity {
                     return;
                 }
 
-                List<DeebResource> resources = rdfStore.performQuery(PRESET_QUERIES[position]);
+                List<Object> resources = rdfStore.performQuery(PRESET_QUERIES[position]);
                 String source = "<!DOCTYPE html><html>";
 
                 if(resources.isEmpty()) {
                     source += "Nothing useful found.";
                 }
-                else {
-                    source += resources.get(0).getHeaderHtml();
+                else if(resources.get(0) != null && !(resources.get(0) instanceof Literal)) {
+                    source += ((DeebResource) resources.get(0)).getHeaderHtml();
                 }
 
-                for(DeebResource resource : resources)
-                    source += resource.getHtml() + "<p/>";
+                for(Object resource : resources)
+                    if(resource instanceof Literal)
+                        source += ((Literal) resource).getLexicalForm() + "<p/>";
+                    else
+                        source += ((DeebResource) resource).getHtml() + "<p/>";
 
                 source += "</html>";
                 webView.loadDataWithBaseURL(null, source, "text/html", "UTF-8", null);

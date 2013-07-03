@@ -70,7 +70,7 @@ public interface DeebRdfStore {
      * @return
      *         Liste der Resourcen, die gefunden wurden
      */
-    public List<DeebResource> performQuery(String queryString);
+    public List<Object> performQuery(String queryString);
 
     /**
      * Gibt das genutzte Model zurueck.
