@@ -23,9 +23,11 @@ public class HistoryBrowserActivity extends Activity {
     protected static final String[] PRESET_QUERIES             = new String[] {
                                                                "SELECT ?subject ?predicate ?object WHERE { ?subject ?predicate ?object }",
                                                                "SELECT ?object WHERE { ?subject <http://Schema.org/author> ?object }" };
+                                                               "SELECT DISTINCT ?object WHERE { ?subject <http://purl.org/dc/elements/1.1/subject> ?object }" };
     private static final String[]   PRESET_QUERIES_DESCRIPTION = new String[] {
                                                                "everything (file)",
-                                                               "authors of something" };
+                                                               "authors of something",
+                                                               "all book subjects" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
