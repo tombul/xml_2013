@@ -123,7 +123,6 @@ public class MicrodataParser {
         return null;
     }
 
-    @SuppressWarnings("unused")
     private DeebResource getArticleFromNode(Node node) {
         try {
             Node activeNode = node;
@@ -137,6 +136,10 @@ public class MicrodataParser {
             Person editor = null;
             List<UserComment> comments = new LinkedList<UserComment>();
             List<Review> reviews = new LinkedList<Review>();
+            Boolean dateSet = false;
+            Boolean editorSet = false;
+            Boolean commentsSet = false;
+            Boolean reviewsSet = false;
             do {
                 if(Node.ELEMENT_NODE == activeNode.getNodeType()) {
                     String field = activeNode.getNodeName();
@@ -145,7 +148,8 @@ public class MicrodataParser {
                         name = value;
                     }
                     else if(field.equals("url")) {
-                        url = value;
+                        url = value.trim();
+                        Debug.logLongString(value);
                     }
                     else if(field.equals("description")) {
                         description = getNodeContent(activeNode);
@@ -160,31 +164,35 @@ public class MicrodataParser {
                         author = getPersonContent(activeNode);
                     }
                     else if(field.equals("dateModified")) {
-                        datePublished = parseStringToDate(value);
+                        dateSet = true;
+                        dateModified = parseStringToDate(value);
                     }
                     else if(field.equals("editor")) {
-                        author = getPersonContent(activeNode);
+                        editorSet = true;
+                        editor = getPersonContent(activeNode);
                     }
                     else if(field.equals("comment")) {
+                        commentsSet = true;
                         comments.add(getCommentContent(activeNode));
                     }
                     else if(field.equals("review")) {
+                        reviewsSet = true;
                         reviews.add(getReviewContent(activeNode));
                     }
                 }
             }
             while((activeNode = activeNode.getNextSibling()) != null);
             Article result = new Article(name, url, description, keywords, datePublished, author);
-            if(dateModified != null) {
+            if(dateSet) {
                 result.setDateModified(dateModified);
             }
-            if(editor != null) {
+            if(editorSet) {
                 result.setEditor(editor);
             }
-            if(!comments.isEmpty()) {
+            if(commentsSet) {
                 result.setComments(comments);
             }
-            if(!reviews.isEmpty()) {
+            if(reviewsSet) {
                 result.setReviews(reviews);
             }
             return result;
@@ -216,7 +224,7 @@ public class MicrodataParser {
     }
 
     private Person getPersonContent(Node node) {
-        Node activeNode = node;
+        Node activeNode = node.getFirstChild();
         String givenName = null;
         String lastName = null;
         String url = null;
@@ -236,7 +244,7 @@ public class MicrodataParser {
                     }
                 }
                 else if(field.equals("url")) {
-                    url = value;
+                    url = value.trim();
                 }
                 else if(field.equals("image")) {
                     image = getNodeContent(activeNode);
@@ -256,7 +264,7 @@ public class MicrodataParser {
 
     private UserComment getCommentContent(Node node) {
         try {
-            Node activeNode = node;
+            Node activeNode = node.getFirstChild();
             String commentText = null;
             Date commentTime = null;
             String discusses = null;
@@ -272,7 +280,7 @@ public class MicrodataParser {
                         commentTime = parseStringToDate(value);
                     }
                     else if(field.equals("discusses")) {
-                        discusses = getNodeContent(activeNode);
+                        discusses = value.trim();
                     }
                     else if(field.equals("creator")) {
                         creator = getPersonContent(activeNode);
@@ -288,10 +296,9 @@ public class MicrodataParser {
         return null;
     }
 
-    @SuppressWarnings("unused")
     private Review getReviewContent(Node node) {
         try {
-            Node activeNode = node;
+            Node activeNode = node.getFirstChild();
             String about = null;
             String url = null;
             String description = null;
@@ -300,6 +307,9 @@ public class MicrodataParser {
             Date dateModified = null;
             Person editor = null;
             List<UserComment> comments = new LinkedList<UserComment>();
+            Boolean dateSet = false;
+            Boolean editorSet = false;
+            Boolean commentsSet = false;
             do {
                 if(Node.ELEMENT_NODE == activeNode.getNodeType()) {
                     String field = activeNode.getNodeName();
@@ -308,7 +318,7 @@ public class MicrodataParser {
                         about = value;
                     }
                     else if(field.equals("url")) {
-                        url = value;
+                        url = value.trim();
                     }
                     else if(field.equals("description")) {
                         description = getNodeContent(activeNode);
@@ -320,25 +330,28 @@ public class MicrodataParser {
                         author = getPersonContent(activeNode);
                     }
                     else if(field.equals("dateModified")) {
-                        datePublished = parseStringToDate(value);
+                        dateModified = parseStringToDate(value);
+                        dateSet = true;
                     }
                     else if(field.equals("editor")) {
-                        author = getPersonContent(activeNode);
+                        editorSet = true;
+                        editor = getPersonContent(activeNode);
                     }
                     else if(field.equals("comments")) {
                         comments.add(getCommentContent(activeNode));
+                        commentsSet = true;
                     }
                 }
             }
             while((activeNode = activeNode.getNextSibling()) != null);
             Review result = new Review(about, url, description, datePublished, author);
-            if(dateModified != null) {
+            if(dateSet) {
                 result.setDateModified(dateModified);
             }
-            if(editor != null) {
+            if(editorSet) {
                 result.setEditor(editor);
             }
-            if(!comments.isEmpty()) {
+            if(commentsSet) {
                 result.setComments(comments);
             }
             return result;

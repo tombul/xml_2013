@@ -241,7 +241,24 @@ public class Review extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-        return null;
+        String html = "<div style=\"display:inline-block;margin-top:10px;margin-bottom:10px;\"><div style=\"display:inline-block;background-color:#036;\"><a href=\"" + about + "\">Link to the question</a></div>";
+        html += "<div style=\"background-color:#9C0;display:inline-block;padding:5px;\">" + description + "</div>";
+        html += "<div style=\"display:inline-block;margin-right:5px;\"><a href=\"" + url + "\">Link to this answer</a></div>";
+        html += "<div style=\"display:inline-block;\">";
+        if(editor != null) {
+            html += "<div style=\"display:inline-block;float:left;\">" + editor.getHtml();
+        }
+        if(dateModified != null) {
+            html += "<div>edited at: " + dateModified + "</div></div>";
+        }
+        html += author.getHtml();
+        html += "<div style=\"display:inline-block;\">answered at: " + datePublished + "</div";
+        if(comments != null && !comments.isEmpty()) {
+            for(UserComment comment : comments) {
+                html += comment.getHtml();
+            }
+        }
+        html += "</div>";
+        return html;
     }
 }

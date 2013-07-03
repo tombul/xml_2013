@@ -141,8 +141,14 @@ public class UserComment extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-        return null;
+        String html = "<div style=\"display:inline-block;\"><div style=\"display:inline-block;background-color:#036;color:#FFF;\"><a href=\"" + discusses + "\">Link to Article</a></div>";
+        html += "<div style=\"display:inline-block;background-color:#9C0;color:#FFF;\">" + commentText + "</div>";
+        html += "<div style=\"display:inline-block;\">commented at: " + commentTime + "</div";
+        if(creator != null) {
+            html += "<div style=\"display:inline-block;\">" + creator.getHtml() + "</div>";
+        }
+        html += "</div>";
+        return html;
     }
 
 }

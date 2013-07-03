@@ -49,6 +49,9 @@ public class HistoryBrowserActivity extends Activity {
                 if(resources.isEmpty()) {
                     source += "Nothing useful found.";
                 }
+                else {
+                    source += resources.get(0).getHeaderHtml();
+                }
 
                 for(DeebResource resource : resources)
                     source += resource.getHtml() + "<p/>";

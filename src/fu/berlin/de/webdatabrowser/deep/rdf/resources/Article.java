@@ -280,9 +280,32 @@ public class Article extends DeebResource {
 
     @Override
     public String getHtml() {
-        String html = "<body>" +
-                "blöder text, es funzt" +
-                "</body>";
+        String html = "<body style=\"width:100%;\">";
+        html += "<div style=\"padding:10px;width:95%;\"><div style=\"background-color:#036;font-weight:bold;font-size:15px;color:#FFF;margin-bottom:25px;\">" + name + "</div>";
+        html += "<div style=\"background-color:#06C;display:inline-block;\">" + description + "</div>";
+        html += "<div>";
+        if(editor != null) {
+            html += "<div style=\"display:inline-block;float:left;\">" + editor.getHtml();
+        }
+        if(dateModified != null) {
+            html += "<div>edited at: " + dateModified + "</div></div>";
+        }
+        html += "<div style=\"display:inline-block\"><a href=\"" + url + "\" title=\"Link to this question\">Link to this site</a></div>";
+        html += "<div style=\"display:inline-block\">" + keywords + "</div>";
+        html += author.getHtml();
+        html += "<div style=\"display:inline-block\"><div style=\"display:inline-block;margin-right:15px;\">asked at:</div><div style=\"display:inline-block\">" + datePublished + "</div></div";
+        html += "</div>";
+        if(comments != null && !comments.isEmpty()) {
+            for(UserComment comment : comments) {
+                html += comment.getHtml();
+            }
+        }
+        if(reviews != null && !reviews.isEmpty()) {
+            for(Review review : reviews) {
+                html += review.getHtml();
+            }
+        }
+        html += "</div></body>";
         return html;
     }
 

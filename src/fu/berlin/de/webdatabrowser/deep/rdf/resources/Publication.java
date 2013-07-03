@@ -14,7 +14,7 @@ public class Publication extends DeebResource {
 
     private String                        title;
     private String                        identifier;
-    private Person                        creator;
+    private String                        creator;
     private String                        date;
     private String                        description;
     private String                        publisher;
@@ -57,16 +57,15 @@ public class Publication extends DeebResource {
         }
     }
 
-    public Person getCreator() {
+    public String getCreator() {
         return creator;
     }
 
-    public void setCreator(Person creator) {
+    public void setCreator(String creator) {
         this.creator = creator;
         if(getResource() != null) {
             getResource().removeAll(DC.creator);
-            creator.saveInModel(getResource().getModel());
-            getResource().addProperty(DC.creator, creator.getResource());
+            getResource().addProperty(DC.creator, creator);
         }
     }
 
@@ -143,11 +142,7 @@ public class Publication extends DeebResource {
             this.identifier = resource.getProperty(DC.identifier).getString();
 
         if(resource.getProperty(DC.creator) != null) {
-            Resource creatorResource = resource.getProperty(DC.creator).getResource();
-
-            Person creator = new Person(creatorResource.getLocalName());
-            creator.fromResource(creatorResource);
-            this.creator = creator;
+            this.creator = resource.getProperty(DC.creator).getString();
         }
 
         if(resource.getProperty(DC.date) != null) {
@@ -178,11 +173,8 @@ public class Publication extends DeebResource {
             getResource().addProperty(DC.title, getTitle());
         if(getIdentifier() != null)
             getResource().addProperty(DC.identifier, getIdentifier());
-        if(getCreator() != null) {
-            if(getCreator().getResource() == null)
-                getCreator().saveInModel(model);
-            getResource().addProperty(DC.creator, getCreator().getResource());
-        }
+        if(getCreator() != null)
+            getResource().addProperty(DC.creator, getCreator());
         if(getDate() != null)
             getResource().addProperty(DC.date, getDate());
         if(getDescription() != null)
@@ -219,7 +211,7 @@ public class Publication extends DeebResource {
                 "Creator" +
                 "</td>" +
                 "<td>" +
-                this.creator.getHtml() +
+                this.creator +
                 "</td>" +
                 "<tr>" +
                 "<td>" +

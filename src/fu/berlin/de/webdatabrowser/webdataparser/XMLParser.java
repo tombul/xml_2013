@@ -18,7 +18,6 @@ import org.xml.sax.SAXException;
 
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
-import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Publication;
 import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
@@ -89,7 +88,7 @@ public class XMLParser implements HttpResponseHandler {
         Node activeNode = node.getFirstChild();
         String title = null;
         String identifier = null;
-        Person creator = null;
+        String creator = null;
         String publisher = null;
         String description = null;
         List<String> subject = new LinkedList<String>();
@@ -102,22 +101,10 @@ public class XMLParser implements HttpResponseHandler {
                     title = value;
                 }
                 else if(field.equals("dc:identifier")) {
-                    identifier = value;
+                    identifier = value.trim();
                 }
                 else if(field.equals("dc:creator")) {
-                    String lName = value.split(",")[0];
-                    if(value.split(",").length < 2) {
-                        Person person = new Person(lName);
-                        person.setLastName(lName);
-                        creator = person;
-                    }
-                    else {
-                        String fName = value.split(",")[1];
-                        Person person = new Person(fName + " " + lName);
-                        person.setGivenName(fName);
-                        person.setLastName(lName);
-                        creator = person;
-                    }
+                    creator = value;
                 }
                 else if(field.equals("dc:subject")) {
                     subject.add(value);
@@ -134,9 +121,12 @@ public class XMLParser implements HttpResponseHandler {
             }
         }
         while((activeNode = activeNode.getNextSibling()) != null);
-        Publication result = new Publication(identifier);
+        Publication result = new Publication(title);
         if(title != null) {
             result.setTitle(title);
+        }
+        if(identifier != null) {
+            result.setIdentifier(identifier);
         }
         if(creator != null) {
             result.setCreator(creator);

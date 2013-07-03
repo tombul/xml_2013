@@ -155,13 +155,21 @@ public class Person extends DeebResource {
 
     @Override
     public String getHtml() {
-        // TODO Auto-generated method stub
-        String html = "<div>";
+        String html = "<div style=\"display:inline-block;\">";
         if(givenName == null) {
             html += lastName;
         }
+        else if(lastName == null) {
+            html += givenName;
+        }
         else {
             html += givenName + " " + lastName;
+        }
+        if(image != null) {
+            html += "<div style=\"display:inline-block;\">" + image + "</div>";
+        }
+        if(award != null) {
+            html += "<div style=\"display:inline-block;\">" + award + "</div>";
         }
         html += "</div>";
         return html;
