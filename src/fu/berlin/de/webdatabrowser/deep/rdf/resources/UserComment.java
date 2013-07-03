@@ -112,6 +112,8 @@ public class UserComment extends DeebResource {
             }
             catch(ParseException e) {
             }
+            catch(NullPointerException e) {
+            }
         if(resource.getProperty(Schema.creator) != null)
             this.creator = (Person) DeebResource.createResource(resource.getProperty(Schema.creator).getResource());
         if(resource.getProperty(Schema.discusses) != null)
