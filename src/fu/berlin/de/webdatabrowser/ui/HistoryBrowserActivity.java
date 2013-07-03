@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -39,7 +40,14 @@ public class HistoryBrowserActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0) {
-                    rdfStore.writeQueryFormattedResultToFile(PRESET_QUERIES[0], "rdfstore_dump.txt");
+                    new AsyncTask<String, Void, Boolean>() {
+
+                        @Override
+                        protected Boolean doInBackground(String... params) {
+                            return rdfStore.writeQueryFormattedResultToFile(PRESET_QUERIES[0], "rdfstore_dump.txt");
+                        }
+                    }.execute();
+
                     return;
                 }
 
