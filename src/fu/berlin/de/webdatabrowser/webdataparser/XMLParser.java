@@ -6,6 +6,7 @@ package fu.berlin.de.webdatabrowser.webdataparser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.xml.sax.SAXException;
 
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Found;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Publication;
 import fu.berlin.de.webdatabrowser.util.Debug;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
@@ -29,6 +31,7 @@ import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
  */
 public class XMLParser implements HttpResponseHandler {
     private final WebDataParser resultHandler;
+    private String              URL;
 
     public XMLParser(WebDataParser resultHandler) {
         this.resultHandler = resultHandler;
@@ -37,6 +40,7 @@ public class XMLParser implements HttpResponseHandler {
     public void parseXML(String url) {
         String newUrl = url.replace("http://www.openarchives.org/Register/BrowseSites?viewRecord=", "");
         newUrl = newUrl.concat("?verb=ListRecords&metadataPrefix=oai_dc");
+        URL = url;
         new HttpRequestAsyncTask(this).execute(newUrl);
     }
 
@@ -146,6 +150,10 @@ public class XMLParser implements HttpResponseHandler {
         if(date != null) {
             result.setDate(date);
         }
+        Found found = new Found(URL);
+        found.setFoundWhere(URL);
+        found.setFoundWhen(new Date());
+        result.addFound(found);
         return result;
     }
 

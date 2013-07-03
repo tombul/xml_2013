@@ -36,6 +36,7 @@ import android.util.Log;
 import fu.berlin.de.webdatabrowser.R;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Article;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Found;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Review;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.UserComment;
@@ -51,6 +52,7 @@ import fu.berlin.de.webdatabrowser.util.Debug;
 public class MicrodataParser {
     private static final String LOG_TAG = "MicrodataParser";
     private final WebDataParser resultHandler;
+    private String              URL;
 
     public MicrodataParser(WebDataParser resultHandler) {
         this.resultHandler = resultHandler;
@@ -59,6 +61,7 @@ public class MicrodataParser {
     public void parseMicroDataHtml(String source, String url, Context context) {
         int microDataID = R.raw.stackoverflow_to_xml;
         ByteArrayInputStream stream = null;
+        URL = url;
 
         try {
             Element itemscope = Jsoup.parse(source, url).getElementsByAttribute("itemscope").first();
@@ -195,6 +198,10 @@ public class MicrodataParser {
             if(reviewsSet) {
                 result.setReviews(reviews);
             }
+            Found found = new Found(URL);
+            found.setFoundWhere(URL);
+            found.setFoundWhen(new Date());
+            result.addFound(found);
             return result;
         }
         catch(ParseException e) {
@@ -259,6 +266,10 @@ public class MicrodataParser {
         if(image != null) {
             result.setImage(image);
         }
+        Found found = new Found(URL);
+        found.setFoundWhere(URL);
+        found.setFoundWhen(new Date());
+        result.addFound(found);
         return result;
     }
 
@@ -288,7 +299,12 @@ public class MicrodataParser {
                 }
             }
             while((activeNode = activeNode.getNextSibling()) != null);
-            return new UserComment(commentText, commentTime, discusses, creator);
+            UserComment result = new UserComment(commentText, commentTime, discusses, creator);
+            Found found = new Found(URL);
+            found.setFoundWhere(URL);
+            found.setFoundWhen(new Date());
+            result.addFound(found);
+            return result;
         }
         catch(ParseException e) {
             e.printStackTrace();
@@ -354,6 +370,10 @@ public class MicrodataParser {
             if(commentsSet) {
                 result.setComments(comments);
             }
+            Found found = new Found(URL);
+            found.setFoundWhere(URL);
+            found.setFoundWhen(new Date());
+            result.addFound(found);
             return result;
         }
         catch(ParseException e) {

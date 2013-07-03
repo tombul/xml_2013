@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.xml.sax.SAXException;
 import android.util.Log;
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.City;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Found;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Location;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.Person;
 
@@ -183,6 +185,11 @@ public class LDParser {
         targetDoc.appendChild(root);
 
         city = new City(url);
+
+        Found found = new Found(url);
+        found.setFoundWhere(url);
+        found.setFoundWhen(new Date());
+        city.addFound(found);
 
         for(int i = 0; i < rdfEntries.getLength(); i++) {
             Node subject = rdfEntries.item(i);

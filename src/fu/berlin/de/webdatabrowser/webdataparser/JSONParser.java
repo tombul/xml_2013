@@ -1,10 +1,12 @@
 package fu.berlin.de.webdatabrowser.webdataparser;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fu.berlin.de.webdatabrowser.deep.rdf.DeebResource;
+import fu.berlin.de.webdatabrowser.deep.rdf.resources.Found;
 import fu.berlin.de.webdatabrowser.deep.rdf.resources.HistoricalObject;
 import fu.berlin.de.webdatabrowser.util.HttpRequestAsyncTask;
 import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
@@ -12,6 +14,7 @@ import fu.berlin.de.webdatabrowser.util.HttpResponseHandler;
 public class JSONParser implements HttpResponseHandler {
     private final WebDataParser resultHandler;
     static String[]             values = new String[8];
+    private String              URL;
 
     public JSONParser(WebDataParser resultHandler) {
         this.resultHandler = resultHandler;
@@ -63,6 +66,8 @@ public class JSONParser implements HttpResponseHandler {
             return;
         }
 
+        URL = "http://europeana.eu/api/v2/record/" + jSONID + ".json?wskey=PmbkTtFZf&profile=full";
+
         new HttpRequestAsyncTask(this).execute(
                 "http://europeana.eu/api/v2/record/" + jSONID + ".json?wskey=PmbkTtFZf&profile=full");
     }
@@ -90,6 +95,10 @@ public class JSONParser implements HttpResponseHandler {
         LinkedList<DeebResource> objects = new LinkedList<DeebResource>();
         HistoricalObject object = new HistoricalObject(values[6], values[0], values[1], values[3], values[4],
                 values[5], values[6], values[7], values[2]);
+        Found found = new Found(URL);
+        found.setFoundWhere(URL);
+        found.setFoundWhen(new Date());
+        object.addFound(found);
         objects.add(object);
         resultHandler.onParsingResultAvailable(objects);
     }
